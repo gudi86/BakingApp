@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+        android:id="@+id/epv_recipe"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".7" />
+
+    <TextView
+        android:id="@+id/tv_step_description"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
+        tools:text="8. Pour the batter into the cooled cookie crust. Bang the pan on a counter or sturdy table a few times to release air bubbles from the batter."/>
+
+</LinearLayout>
