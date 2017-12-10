@@ -13,7 +13,7 @@ public interface BakingRemote {
     interface OnFetchRecipe {
         public void onRecipeLoad(List<Recipe> recipes);
 
-        public void onFailFetch();
+        public void onFailFetch(Throwable t);
     }
 
     void fetchRecipes(OnFetchRecipe fetchRecipe);

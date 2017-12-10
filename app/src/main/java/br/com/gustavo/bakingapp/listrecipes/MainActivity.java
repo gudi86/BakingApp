@@ -8,7 +8,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.List;
 
@@ -17,31 +18,16 @@ import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
 import br.com.gustavo.bakingapp.masterrecipe.MasterStepDetailActivity;
 
-/*
-    TODO Atividades
-
-    - Estruturar o MVP no projeto
-    - Ajustar video de apresentação na tela dos passos
-    - Implementar a tela de video em landscape
-    - Criar o widget
-    - Tratar eventos ao realizar do landscape
-    - Ajustar layout
-        - Layout em todas as tela
-        - Na barra superior incluir o titulo
-
-
-
- */
-
 public class MainActivity extends AppCompatActivity implements ListRecipesContract.View, AdapterRecipes.OnClickRecipe {
 
-    private static final String TAG = MainActivity.class.getName();
+    private static final String LOG_TAG = MainActivity.class.getName();
 
     public static final String RECIPE = "RECIPE";
 
     private ListRecipesContract.Presenter presenter;
 
     private RecyclerView recyclerView;
+    private ViewGroup layoutError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements ListRecipesContra
         new ListRecipesPresenter(BakingDataSourceImpl.getInstance(getBaseContext()), this);
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_recipes);
+        layoutError = (ViewGroup) findViewById(R.id.ll_wrong_data);
 
         RecyclerView.LayoutManager layoutManager;
         if (getResources().getBoolean(R.bool.isTablet)) {
@@ -70,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements ListRecipesContra
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "##### onResume is called");
+        Log.d(LOG_TAG, "##### onResume is called");
         presenter.start();
     }
 
@@ -81,20 +68,26 @@ public class MainActivity extends AppCompatActivity implements ListRecipesContra
 
     @Override
     public void onClickRecipeItem(Recipe recipe) {
-        Toast.makeText(getBaseContext(), "Clicou na receita " + recipe.getName(), Toast.LENGTH_SHORT).show();
+        Log.d(LOG_TAG, recipe.getName() + " was clicked!");
         presenter.openSelected(recipe);
     }
 
     @Override
     public void showNoRecipes() {
-        Toast.makeText(getBaseContext(), "Houve um erro para exibir as receitas!", Toast.LENGTH_LONG).show();
+        isWrongData(true);
     }
 
     @Override
     public void showSelected(Recipe recipe) {
+        isWrongData(false);
         Intent intent = new Intent(this, MasterStepDetailActivity.class);
         intent.putExtra(RECIPE, recipe);
         startActivity(intent);
+    }
+
+    private void isWrongData(boolean isWrong) {
+        recyclerView.setVisibility(isWrong?View.GONE:View.VISIBLE);
+        layoutError.setVisibility(isWrong?View.VISIBLE:View.GONE);
     }
 
 }

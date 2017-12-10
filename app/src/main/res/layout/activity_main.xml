@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rv_recipes"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.com.gustavo.bakingapp.listrecipes.MainActivity"/>
+    tools:context="br.com.gustavo.bakingapp.listrecipes.MainActivity"
+    >
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_recipes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+    <LinearLayout
+        android:id="@+id/ll_wrong_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/pad_wrong_service"
+        android:layout_gravity="center">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/txt_wrong_service"
+            android:src="@drawable/emoji_cry"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/txt_wrong_service"
+            android:text="@string/msg_data_not_found"/>
+
+    </LinearLayout>
+
+</FrameLayout>

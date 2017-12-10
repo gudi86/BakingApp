@@ -21,14 +21,15 @@ import br.com.gustavo.bakingapp.listrecipes.MainActivity;
  * Created by gustavomagalhaes on 11/27/17.
  */
 
-public class ListStepRecipeFragment extends Fragment implements AdapterStepDetail.OnClickStep{
+public class ListStepRecipeFragment extends Fragment implements AdapterStepDetail.OnClickStep, StepRecipeContract.View{
 
     private static final String LOG_TAG = ListStepRecipeFragment.class.getName();
+    private StepRecipeContract.Presenter presenter;
+
 
     public interface OnSelectedStep {
         public void onClickSelectedStep(Step step);
     }
-
     private RecyclerView rvStepDetails;
 
     private OnSelectedStep onCallbackSelectStep = null;
@@ -53,15 +54,11 @@ public class ListStepRecipeFragment extends Fragment implements AdapterStepDetai
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View lstRecipeStep = inflater.inflate(R.layout.fragment_list_recipe_step, container, false);
-
         Recipe recipe = getActivity().getIntent().getParcelableExtra(MainActivity.RECIPE);
         if (recipe != null) {
-
             rvStepDetails = lstRecipeStep.findViewById(R.id.rv_recipe_detail);
-
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
             rvStepDetails.setLayoutManager(layoutManager);
-
             rvStepDetails.setAdapter(new AdapterStepDetail(recipe.getIngredients(), recipe.getSteps(), this));
 
         } else {
@@ -73,8 +70,18 @@ public class ListStepRecipeFragment extends Fragment implements AdapterStepDetai
     }
 
     @Override
+    public void setPresenter(StepRecipeContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
     public void onClickStep(Step step) {
         Log.d(LOG_TAG, "Clicou no step: " + step.getShortDescription());
+        presenter.openSelected(step);
+    }
+
+    @Override
+    public void showStep(Step step) {
         onCallbackSelectStep.onClickSelectedStep(step);
     }
 }

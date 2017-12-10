@@ -2,4 +2,6 @@
 <resources>
     <dimen name="height_lbl_card">50dp</dimen>
     <dimen name="title_recipe">25sp</dimen>
+    <dimen name="txt_wrong_service">8dp</dimen>
+    <dimen name="pad_wrong_service">70dp</dimen>
 </resources>

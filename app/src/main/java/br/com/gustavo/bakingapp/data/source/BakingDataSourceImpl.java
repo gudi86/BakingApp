@@ -53,7 +53,7 @@ public class BakingDataSourceImpl implements BakingDataSource {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                 if (response.body() == null) {
-                    fetchRecipe.onFailFetch();
+                    fetchRecipe.onFailFetch(new Throwable("Body is empyt"));
                 }
 
                 fetchRecipe.onRecipeLoad(response.body());
@@ -61,7 +61,7 @@ public class BakingDataSourceImpl implements BakingDataSource {
 
             @Override
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
-                fetchRecipe.onFailFetch();
+                fetchRecipe.onFailFetch(t);
             }
         });
     }

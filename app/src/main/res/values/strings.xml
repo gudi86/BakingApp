@@ -3,4 +3,5 @@
     <string name="lbl_next_step">NEXT STEP</string>
     <string name="lbl_back_initial">FIRST STEP</string>
     <string name="lbl_previous_step">PREVIOUS STEP</string>
+    <string name="msg_data_not_found">Something wrong happened in our service\n try again later.</string>
 </resources>

@@ -1,6 +1,7 @@
 package br.com.gustavo.bakingapp.listrecipes;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import br.com.gustavo.bakingapp.data.source.remote.BakingRemote;
 
 public class ListRecipesPresenter implements ListRecipesContract.Presenter {
 
+    private static final String LOG_TAG = ListRecipesPresenter.class.getName();
     private ListRecipesContract.View view;
 
     private BakingDataSource dataSource;
@@ -35,7 +37,8 @@ public class ListRecipesPresenter implements ListRecipesContract.Presenter {
             }
 
             @Override
-            public void onFailFetch() {
+            public void onFailFetch(Throwable t) {
+                Log.d(LOG_TAG, "Happening an error: ", t);
                 view.showNoRecipes();
             }
         });

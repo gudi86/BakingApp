@@ -64,12 +64,8 @@ public class StepDetailActivity extends AppCompatActivity {
             StepDetailFragment stepDetailFragment = new StepDetailFragment();
         if (view.getId() == R.id.btn_next_step) {
             stepDetailFragment.setStep(steps.get(++idx));
-
-//            setLabelNextStep();
         } else if (view.getId() == R.id.btn_previous_step) {
             stepDetailFragment.setStep(steps.get(--idx));
-
-//            setLabelNextStep();
         }
 
         controlButtonsPN();
@@ -77,9 +73,4 @@ public class StepDetailActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container_step_detail, stepDetailFragment).commitNow();
     }
 
-    private void setLabelNextStep() {
-        if ((steps.size() - 1) == idx) {
-            buttonNext.setText(getResources().getString(R.string.lbl_back_initial));
-        }
-    }
 }
