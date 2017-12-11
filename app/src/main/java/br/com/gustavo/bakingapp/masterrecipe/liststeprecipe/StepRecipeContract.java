@@ -1,7 +1,11 @@
 package br.com.gustavo.bakingapp.masterrecipe.liststeprecipe;
 
+import java.util.List;
+
 import br.com.gustavo.bakingapp.BasePresenter;
 import br.com.gustavo.bakingapp.BaseView;
+import br.com.gustavo.bakingapp.data.model.Ingredient;
+import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.model.Step;
 
 /**
@@ -11,10 +15,16 @@ import br.com.gustavo.bakingapp.data.model.Step;
 public interface StepRecipeContract {
     interface View extends BaseView<Presenter> {
         void showStep(Step step);
+
+        void showListInstructions(List<Step> steps, List<Ingredient> ingredients);
+
+        void showFailLoadSteps();
     }
 
     interface Presenter extends BasePresenter {
 
         void openSelected(Step step);
+
+        void loadRecipe(Recipe recipe);
     }
 }

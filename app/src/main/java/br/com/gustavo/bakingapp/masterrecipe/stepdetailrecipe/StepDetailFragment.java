@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -27,52 +28,54 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 import br.com.gustavo.bakingapp.R;
 import br.com.gustavo.bakingapp.data.model.Step;
+import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
 
 /**
  * Created by gustavomagalhaes on 11/30/17.
  */
 
-public class StepDetailFragment extends Fragment implements ExoPlayer.EventListener {
+public class StepDetailFragment extends Fragment implements StepDetailContract.Intern.View, ExoPlayer.EventListener {
 
     private Step stepRecipe;
     private SimpleExoPlayerView simpleExoPlayerView;
     private SimpleExoPlayer mExoPlayer = null;
+    private View layoutView;
+    private StepDetailContract.Intern.Presenter presenter;
+    private ImageView imageStep;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View viewRoot = inflater.inflate(R.layout.fragment_step_detail, container, false);
+        layoutView = inflater.inflate(R.layout.fragment_step_detail, container, false);
+        simpleExoPlayerView = layoutView.findViewById(R.id.epv_recipe);
+        imageStep = layoutView.findViewById(R.id.iv_recipe);
 
-        TextView tvStepDescription = viewRoot.findViewById(R.id.tv_step_description);
+        new StepDetailInternPresenter(BakingDataSourceImpl.getInstance(getContext()), this);
+        presenter.loadStep(stepRecipe);
 
-        //TODO Implementar o video
-        simpleExoPlayerView = viewRoot.findViewById(R.id.epv_recipe);
-
-        tvStepDescription.setText(stepRecipe.getDescription());
-
-        String url = "";
-        if (!stepRecipe.getVideoUrl().equals("")) {
-            url = stepRecipe.getVideoUrl();
-        } else if(!stepRecipe.getThumbnailUrl().equals("")) {
-            url = stepRecipe.getThumbnailUrl();
-        }
-
-        if (!url.equals("")) {
-            initializePlayer(Uri.parse(url));
-        }
-
-        return viewRoot;
+        return layoutView;
     }
 
-    public void setStep(Step step) {
-        this.stepRecipe = step;
+    @Override
+    public void setPresenter(StepDetailContract.Intern.Presenter presenter) {
+        this.presenter = presenter;
     }
 
-    private void initializePlayer(Uri mediaUri) {
+    @Override
+    public void showTextDescription(String description) {
+        TextView tvStepDescription = layoutView.findViewById(R.id.tv_step_description);
+        tvStepDescription.setText(description);
+    }
+
+    @Override
+    public void showVideoBy(Uri videoUri) {
         if (mExoPlayer == null) {
+            simpleExoPlayerView.setVisibility(View.VISIBLE);
+            imageStep.setVisibility(View.GONE);
             // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
@@ -85,7 +88,7 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
             // Prepare the MediaSource.
             String userAgent = Util.getUserAgent(getContext(), "BakingApp");
             MediaSource mediaSource = new ExtractorMediaSource(
-                    mediaUri,
+                    videoUri,
                     new DefaultDataSourceFactory(getContext(), userAgent),
                     new DefaultExtractorsFactory(),
                     null,
@@ -93,6 +96,26 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
         }
+    }
+
+    @Override
+    public void showImageBy(Uri imageUri) {
+        imageStep.setVisibility(View.VISIBLE);
+        simpleExoPlayerView.setVisibility(View.GONE);
+        Picasso
+            .with(getContext())
+            .load(imageUri)
+            .into(imageStep);
+    }
+
+    @Override
+    public void showMissingMedia() {
+        simpleExoPlayerView.setVisibility(View.GONE);
+        imageStep.setVisibility(View.VISIBLE);
+    }
+
+    public void setStep(Step step) {
+        this.stepRecipe = step;
     }
 
     private void releasePlayer() {
@@ -148,7 +171,6 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
     public void onPositionDiscontinuity(int reason) {
 
     }
-
     @Override
     public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
 

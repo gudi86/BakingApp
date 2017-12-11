@@ -1,5 +1,6 @@
 package br.com.gustavo.bakingapp.masterrecipe.liststeprecipe;
 
+import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.model.Step;
 import br.com.gustavo.bakingapp.data.source.BakingDataSource;
 
@@ -26,7 +27,17 @@ public class StepRecipePresenter implements StepRecipeContract.Presenter {
     }
 
     @Override
+    public void loadRecipe(Recipe recipe) {
+        if (recipe != null) {
+            view.showListInstructions(recipe.getSteps(), recipe.getIngredients());
+        } else {
+            view.showFailLoadSteps();
+        }
+    }
+
+    @Override
     public void openSelected(Step step) {
         view.showStep(step);
     }
+
 }
