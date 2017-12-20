@@ -3,6 +3,7 @@ package br.com.gustavo.bakingapp.masterrecipe.stepdetailrecipe;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.os.ConfigurationCompat;
 import android.support.v4.util.Preconditions;
@@ -31,6 +32,8 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailC
     private Button buttonPrevious;
 
     private StepDetailContract.Extern.Presenter presenter;
+    private StepDetailFragment stepDetailFragment;
+    private Bundle savedState = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +48,10 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailC
 
         new StepDetailExternPresenter(BakingDataSourceImpl.getInstance(getBaseContext()), this);
 
+        if (savedInstanceState != null && savedInstanceState.containsKey("frag")) {
+            savedState = savedInstanceState;
+        }
+
         if (getIntent() != null) {
             List<Step> steps = getIntent().getParcelableArrayListExtra(MasterStepDetailActivity.STEP_RECIPE);
             presenter.loadStepByIndex(steps,
@@ -53,6 +60,18 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailC
             Log.d(TAG_LOG, "Intent is null");
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        savedState = null;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, "frag", stepDetailFragment);
     }
 
     public void clickNewStep(View view) {
@@ -91,7 +110,15 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailC
 
     @Override
     public void showStep(Step step) {
-        StepDetailFragment stepDetailFragment = new StepDetailFragment();
+        if (savedState == null) {
+            stepDetailFragment = new StepDetailFragment();
+        } else {
+            stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedState, "frag");
+        }
+        getIntent().putExtra(
+                MasterStepDetailActivity.IDX_STEP,
+                getIntent().getParcelableArrayListExtra(MasterStepDetailActivity.STEP_RECIPE).indexOf(step));
+
         stepDetailFragment.setStep(step);
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container_step_detail, stepDetailFragment).commitNow();
     }

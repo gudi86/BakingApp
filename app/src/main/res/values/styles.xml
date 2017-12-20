@@ -8,4 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ExoMediaButton.Fullscreen">
+        <item name="android:src">@drawable/icon_fullscreen</item>
+        <item name="android:contentDescription">@string/controls_fullscreen_description</item>
+    </style>
+
+    <style name="ExoMediaButton.FullscreenExit">
+        <item name="android:src">@drawable/icon_fullscreen_exit</item>
+        <item name="android:contentDescription">@string/controls_fullscreen_exit_description</item>
+    </style>
 </resources>

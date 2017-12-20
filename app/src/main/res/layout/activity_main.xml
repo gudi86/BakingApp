@@ -22,15 +22,24 @@
         android:layout_gravity="center">
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:padding="@dimen/txt_wrong_service"
-            android:src="@drawable/emoji_cry"/>
+            android:src="@drawable/icon_cloud_off"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="@dimen/txt_wrong_service"
             android:text="@string/msg_data_not_found"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_button_try"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/colorPrimary"
+            android:textColor="@android:color/white"
+            android:text="@string/lbl_try"
+            android:onClick="clickTryAgain"/>
 
     </LinearLayout>
 

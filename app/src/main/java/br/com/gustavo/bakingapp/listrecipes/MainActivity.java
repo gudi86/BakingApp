@@ -1,6 +1,7 @@
 package br.com.gustavo.bakingapp.listrecipes;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,6 +35,10 @@ public class MainActivity extends AppCompatActivity implements ListRecipesContra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (getResources().getBoolean(R.bool.isTablet)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
         new ListRecipesPresenter(BakingDataSourceImpl.getInstance(getBaseContext()), this);
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_recipes);
@@ -64,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements ListRecipesContra
     @Override
     public void showRecipes(List<Recipe> recipes) {
         recyclerView.setAdapter(new AdapterRecipes(recipes, this));
+    }
+
+    public void clickTryAgain(View view) {
+        presenter.start();
     }
 
     @Override
