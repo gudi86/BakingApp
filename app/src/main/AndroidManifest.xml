@@ -19,7 +19,8 @@
         </activity>
 
         <activity android:name=".masterrecipe.MasterStepDetailActivity" />
-        <activity android:name=".masterrecipe.stepdetailrecipe.StepDetailActivity"/>
+        <activity android:name=".masterrecipe.stepdetailrecipe.StepDetailActivity"
+            android:configChanges="orientation"/>
 
         <activity android:name=".stepvideo.StepVideoActivity" android:screenOrientation="landscape" />
     </application>

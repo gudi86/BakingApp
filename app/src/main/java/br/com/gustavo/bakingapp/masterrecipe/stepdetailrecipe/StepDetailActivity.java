@@ -10,7 +10,9 @@ import android.support.v4.util.Preconditions;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ import br.com.gustavo.bakingapp.masterrecipe.MasterStepDetailActivity;
  * Created by gustavomagalhaes on 12/2/17.
  */
 
-public class StepDetailActivity extends AppCompatActivity implements StepDetailContract.Extern.View{
+public class StepDetailActivity extends AppCompatActivity implements StepDetailContract.Extern.View {//, StepDetailFragment.OnEventFullscreen{
 
     private static final String TAG_LOG = StepDetailActivity.class.getName();
 
@@ -38,8 +40,6 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailC
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.d(TAG_LOG, "Orientation is portrait: " + (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT));
 
         setContentView(R.layout.activity_step_detail);
 
@@ -66,6 +66,7 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailC
     protected void onResume() {
         super.onResume();
         savedState = null;
+
     }
 
     @Override
@@ -90,22 +91,30 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailC
 
     @Override
     public void disablePreviousButton() {
-        buttonPrevious.setEnabled(false);
+        if (buttonPrevious != null) {
+            buttonPrevious.setEnabled(false);
+        }
     }
 
     @Override
     public void disableNextButton() {
-        buttonNext.setEnabled(false);
+        if (buttonNext != null) {
+            buttonNext.setEnabled(false);
+        }
     }
 
     @Override
     public void enableNextButton() {
-        buttonNext.setEnabled(true);
+        if (buttonNext != null) {
+            buttonNext.setEnabled(true);
+        }
     }
 
     @Override
     public void enablePreviousButton() {
-        buttonPrevious.setEnabled(true);
+        if (buttonPrevious != null) {
+            buttonPrevious.setEnabled(true);
+        }
     }
 
     @Override

@@ -82,8 +82,7 @@
             <!--android:textColor="#FFBEBEBE"/>-->
 
         <ImageButton android:id="@+id/fullscreen"
-            style="@style/ExoMediaButton.Fullscreen"
-            android:onClick="clickFullscreen"/>
+            style="@style/ExoMediaButton.Fullscreen" />
 
     </LinearLayout>
 

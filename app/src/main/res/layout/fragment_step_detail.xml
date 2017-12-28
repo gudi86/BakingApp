@@ -5,28 +5,30 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".7" >
+        android:layout_weight=".7">
 
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/epv_recipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            tools:visibility="visible"
+            app:controller_layout_id="@layout/custom_playback_control"
             app:fastforward_increment="2000"
             app:rewind_increment="2000"
-            app:controller_layout_id="@layout/custom_playback_control"/>
+            tools:visibility="visible" />
+
         <ImageView
             android:id="@+id/iv_recipe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:src="@drawable/ic_error"
             android:visibility="gone"
-            tools:visibility="visible"
-            android:src="@drawable/ic_error"/>
+            tools:visibility="visible" />
 
     </FrameLayout>
 
