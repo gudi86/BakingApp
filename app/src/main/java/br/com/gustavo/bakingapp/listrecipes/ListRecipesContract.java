@@ -12,14 +12,20 @@ import br.com.gustavo.bakingapp.data.model.Recipe;
 
 public interface ListRecipesContract {
     interface View extends BaseView<Presenter> {
-        public void showRecipes(List<Recipe> recipes);
+        void showRecipes(List<Recipe> recipes);
 
-        public void showNoRecipes();
+        void showNoRecipes();
 
-        public void showSelected(Recipe recipe);
+        void showSelected(Recipe recipe);
+
+        void showConfirmAddFavorite();
+
+        void showNotAddFavorite();
     }
 
     interface Presenter extends BasePresenter {
-        public void openSelected(Recipe recipe);
+        void openSelected(Recipe recipe);
+
+        void saveFavorite(Recipe recipe);
     }
 }

@@ -7,4 +7,7 @@
     <string name="lbl_try">TRY AGAIN</string>
     <string name="controls_fullscreen_exit_description">Full Screen Exit</string>
     <string name="controls_fullscreen_description">Full Screen</string>
+    <string name="msg_not_recipe_selected">There isn\'t recipe selected.</string>
+    <string name="lbl_alert">Alert</string>
+    <string name="msg_add_favorite">This recipe is favorited</string>
 </resources>

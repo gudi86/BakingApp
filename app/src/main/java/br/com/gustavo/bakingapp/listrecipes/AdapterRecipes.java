@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +28,8 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.RecipeVi
 
     public interface OnClickRecipe {
         public void onClickRecipeItem(Recipe recipe);
+
+        public void onClickFavorite(Recipe recipe);
     }
 
 
@@ -67,6 +70,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.RecipeVi
 
     class RecipeViewHolder extends RecyclerView.ViewHolder {
 
+        private final Button btnFavorite;
         private ImageView ivRecipe;
         private TextView tvName;
 
@@ -74,11 +78,19 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.RecipeVi
             super(itemView);
             ivRecipe = (ImageView) itemView.findViewById(R.id.ivRecipe);
             tvName = (TextView) itemView.findViewById(R.id.tvName);
+            btnFavorite = itemView.findViewById(R.id.button_favorite);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     onClickRecipe.onClickRecipeItem(recipes.get(getAdapterPosition()));
+                }
+            });
+
+            btnFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClickRecipe.onClickFavorite(recipes.get(getAdapterPosition()));
                 }
             });
         }

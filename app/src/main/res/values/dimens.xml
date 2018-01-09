@@ -5,4 +5,5 @@
     <dimen name="txt_wrong_service">8dp</dimen>
     <dimen name="pad_wrong_service">70dp</dimen>
     <dimen name="margin_button_try">10dp</dimen>
+    <dimen name="pad_widget">8dp</dimen>
 </resources>

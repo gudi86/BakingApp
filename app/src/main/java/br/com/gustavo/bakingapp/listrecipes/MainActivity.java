@@ -1,8 +1,10 @@
 package br.com.gustavo.bakingapp.listrecipes;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,6 +19,7 @@ import java.util.List;
 import br.com.gustavo.bakingapp.R;
 import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
+import br.com.gustavo.bakingapp.listingredientwidget.IngredientService;
 import br.com.gustavo.bakingapp.masterrecipe.MasterStepDetailActivity;
 
 public class MainActivity extends AppCompatActivity implements ListRecipesContract.View, AdapterRecipes.OnClickRecipe {
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements ListRecipesContra
 
     private RecyclerView recyclerView;
     private ViewGroup layoutError;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements ListRecipesContra
 
     @Override
     public void showRecipes(List<Recipe> recipes) {
+        isWrongData(false);
         recyclerView.setAdapter(new AdapterRecipes(recipes, this));
     }
 
@@ -82,6 +87,12 @@ public class MainActivity extends AppCompatActivity implements ListRecipesContra
     }
 
     @Override
+    public void onClickFavorite(Recipe recipe) {
+        Log.d(LOG_TAG, "Clicou no button favorite");
+        presenter.saveFavorite(recipe);
+    }
+
+    @Override
     public void showNoRecipes() {
         isWrongData(true);
     }
@@ -92,6 +103,23 @@ public class MainActivity extends AppCompatActivity implements ListRecipesContra
         Intent intent = new Intent(this, MasterStepDetailActivity.class);
         intent.putExtra(RECIPE, recipe);
         startActivity(intent);
+    }
+
+    @Override
+    public void showConfirmAddFavorite() {
+        Intent intent = new Intent(this, IngredientService.class);
+        intent.putExtra(IngredientService.REFRESH_INGREDIENT, true);
+        intent.setAction(IngredientService.ACTION_SET_RECIPE_FOR_WIDGET);
+        startService(intent);
+    }
+
+    @Override
+    public void showNotAddFavorite() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
+        builder.setTitle(getString(R.string.lbl_alert))
+                .setMessage(getString(R.string.msg_add_favorite))
+                .setPositiveButton(android.R.string.yes, null)
+                .show();
     }
 
     private void isWrongData(boolean isWrong) {

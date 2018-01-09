@@ -1,13 +1,23 @@
 package br.com.gustavo.bakingapp.data.source;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.ContentObserver;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.gustavo.bakingapp.BuildConfig;
+import br.com.gustavo.bakingapp.data.model.Ingredient;
 import br.com.gustavo.bakingapp.data.model.Recipe;
-import br.com.gustavo.bakingapp.data.source.remote.BakingRemote;
+import br.com.gustavo.bakingapp.data.source.database.BakingContract;
+import br.com.gustavo.bakingapp.data.source.database.BakingDataBase;
 import br.com.gustavo.bakingapp.data.source.remote.BakingService;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -22,10 +32,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BakingDataSourceImpl implements BakingDataSource {
 
+    private static final String LOG_TAG = BakingDataSourceImpl.class.getName();
+    private Context context;
+
     private static BakingDataSourceImpl dataSource;
 
     private BakingDataSourceImpl(@NonNull Context context) {
-
+        this.context = context;
     }
 
     public static BakingDataSource getInstance(@NonNull Context context) {
@@ -64,5 +77,93 @@ public class BakingDataSourceImpl implements BakingDataSource {
                 fetchRecipe.onFailFetch(t);
             }
         });
+    }
+
+
+
+    @Override
+    public void addFavorite(Recipe recipe, final OnSaveIngredient callback) {
+
+        context.getContentResolver().delete(BakingContract.IngredientEntry.CONTENT_URI, null, null);
+
+
+        ContentValues[] contentValues = new ContentValues[recipe.getIngredients().size()];
+
+        for (int i=0; i < contentValues.length; i++) {
+            Ingredient ingredient = recipe.getIngredients().get(i);
+            ContentValues contentValue = new ContentValues();
+            contentValue.put(BakingContract.IngredientEntry.COLUMN_QUATITY, ingredient.getQuantity());
+            contentValue.put(BakingContract.IngredientEntry.COLUMN_INGREDIENT, ingredient.getIngredient());
+            contentValue.put(BakingContract.IngredientEntry.COLUMN_MEASURE, ingredient.getMeasure());
+            contentValues[i] = contentValue;
+        }
+
+        ContentObserver observer = new ContentObserver(new Handler(Looper.getMainLooper())) {
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+                context.getContentResolver().unregisterContentObserver(this);
+                callback.onSave();
+            }
+        };
+
+        context.getContentResolver().registerContentObserver(
+                BakingContract.IngredientEntry.CONTENT_URI,
+                false,
+                observer);
+
+
+        int size = context.getContentResolver().bulkInsert(
+                BakingContract.IngredientEntry.CONTENT_URI,
+                contentValues
+        );
+
+        if (contentValues.length != size) {
+            context.getContentResolver().unregisterContentObserver(observer);
+
+            observer = new ContentObserver(new Handler(Looper.getMainLooper())) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    super.onChange(selfChange);
+                    context.getContentResolver().unregisterContentObserver(this);
+                    callback.onFail();
+                }
+            };
+
+            context.getContentResolver().registerContentObserver(
+                    BakingContract.IngredientEntry.CONTENT_URI,
+                    false,
+                    observer);
+
+            context.getContentResolver().delete(BakingContract.IngredientEntry.CONTENT_URI, null, null);
+        } else
+            Log.d(LOG_TAG, "It adds new favorite recipe.");
+    }
+
+    @Override
+    public void fetchFavorite(final OnFetchIngredient onFetchIngredient) {
+
+        Cursor cursor = context.getContentResolver().query(
+                BakingContract.IngredientEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        List<Ingredient> ingredients = new ArrayList<>();
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isLast(); cursor.moveToNext()) {
+                Ingredient ingredient = new Ingredient();
+                ingredient.setQuantity(cursor.getDouble(cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_QUATITY)));
+                ingredient.setIngredient(cursor.getString(cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_INGREDIENT)));
+                ingredient.setMeasure(cursor.getString(cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_MEASURE)));
+                ingredients.add(ingredient);
+            }
+
+            if (!cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        onFetchIngredient.onfetchFavorite(ingredients);
     }
 }

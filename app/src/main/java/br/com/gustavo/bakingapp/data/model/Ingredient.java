@@ -12,6 +12,8 @@ public class Ingredient implements Parcelable {
     private String measure;
     private String ingredient;
 
+    public Ingredient(){}
+
     protected Ingredient(Parcel in) {
         if (in.readByte() == 0) {
             quantity = null;

@@ -42,5 +42,4 @@
             android:onClick="clickTryAgain"/>
 
     </LinearLayout>
-
 </FrameLayout>

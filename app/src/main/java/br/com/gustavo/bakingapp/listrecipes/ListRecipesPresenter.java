@@ -7,6 +7,7 @@ import java.util.List;
 
 import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.source.BakingDataSource;
+import br.com.gustavo.bakingapp.data.source.database.BakingDataBase;
 import br.com.gustavo.bakingapp.data.source.remote.BakingRemote;
 
 /**
@@ -47,5 +48,20 @@ public class ListRecipesPresenter implements ListRecipesContract.Presenter {
     @Override
     public void openSelected(@NonNull Recipe recipe) {
         view.showSelected(recipe);
+    }
+
+    @Override
+    public void saveFavorite(Recipe recipe) {
+        dataSource.addFavorite(recipe, new BakingDataBase.OnSaveIngredient() {
+            @Override
+            public void onSave() {
+                view.showConfirmAddFavorite();
+            }
+
+            @Override
+            public void onFail() {
+                view.showNotAddFavorite();
+            }
+        });
     }
 }
