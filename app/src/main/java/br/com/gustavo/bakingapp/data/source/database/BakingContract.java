@@ -15,6 +15,8 @@ public class BakingContract {
 
     public static final String PATH_INGREDIENT = "ingredient";
 
+    public static final String PATH_RECIPE = "recipe";
+
     public static final long INVALID_ID = -1;
 
     public static final class IngredientEntry implements BaseColumns {
@@ -22,11 +24,24 @@ public class BakingContract {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_INGREDIENT).build();
 
-        public static final String TABLE_NAME = "weather";
+        public static final String TABLE_NAME = "ingredient";
 
         public static final String COLUMN_QUATITY = "quatity";
         public static final String COLUMN_MEASURE = "measure";
         public static final String COLUMN_INGREDIENT = "ingredient";
+
+
+    }
+
+    public static final class RecipeEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_RECIPE).build();
+
+        public static final String TABLE_NAME = "recipe";
+
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_RECIPE_ID = "RECIPE_ID";
 
 
     }

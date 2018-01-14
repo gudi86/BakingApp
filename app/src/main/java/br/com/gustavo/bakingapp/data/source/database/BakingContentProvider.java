@@ -1,6 +1,7 @@
 package br.com.gustavo.bakingapp.data.source.database;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -19,12 +20,14 @@ public class BakingContentProvider extends ContentProvider {
     private static final String LOG_TAG = BakingContentProvider.class.getName();
 
     public static final int INGREDIENTS = 10;
+    public static final int RECIPE = 11;
 
     private static final UriMatcher matcher = buildUriMatcher();
 
     public static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(BakingContract.AUTHORITY, BakingContract.PATH_INGREDIENT, INGREDIENTS);
+        uriMatcher.addURI(BakingContract.AUTHORITY, BakingContract.PATH_RECIPE, RECIPE);
 
         return uriMatcher;
     }
@@ -56,6 +59,15 @@ public class BakingContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+            case RECIPE:
+                cursor = db.query(BakingContract.RecipeEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
 
@@ -73,7 +85,34 @@ public class BakingContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        return null;
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+
+        int match = matcher.match(uri);
+        Uri uriReturn = null;
+        switch (match) {
+            case RECIPE:
+
+                try {
+                    db.beginTransaction();
+
+                    long id = db.insert(BakingContract.RecipeEntry.TABLE_NAME,null, contentValues);
+
+                    if (id > 0)
+                        uriReturn = ContentUris.withAppendedId(uri, id);
+                    else
+                        throw new android.database.SQLException("Failed to insert row into " + uri);
+
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        return uriReturn;
     }
 
     @Override
@@ -94,6 +133,17 @@ public class BakingContentProvider extends ContentProvider {
 
                 getContext().getContentResolver().notifyChange(uri, null);
 
+                break;
+            case RECIPE:
+                try {
+                    db.beginTransaction();
+                    count = db.delete(BakingContract.RecipeEntry.TABLE_NAME, where, args);
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+
+                getContext().getContentResolver().notifyChange(uri, null);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

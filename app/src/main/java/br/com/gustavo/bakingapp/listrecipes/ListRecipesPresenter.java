@@ -1,5 +1,6 @@
 package br.com.gustavo.bakingapp.listrecipes;
 
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -33,8 +34,29 @@ public class ListRecipesPresenter implements ListRecipesContract.Presenter {
     public void start() {
         dataSource.fetchRecipes(new BakingRemote.OnFetchRecipe() {
             @Override
-            public void onRecipeLoad(List<Recipe> recipes) {
-                view.showRecipes(recipes);
+            public void onRecipeLoad(final List<Recipe> recipes) {
+                new android.os.Handler(Looper.myLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        dataSource.fetchFavorite(new BakingDataBase.OnFetchRecipeFavorite() {
+                            @Override
+                            public void onfetchFavorite(Recipe favorite) {
+                                if (favorite != null) {
+                                    dataSource.fetchRecipeBy(favorite.getId(), new BakingDataSource.IFetchRecipe() {
+                                        @Override
+                                        public void getRecipe(Recipe recipe) {
+                                            if (recipe != null) {
+                                                view.showRecipes(recipes, recipe);
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    view.showRecipes(recipes, null);
+                                }
+                            }
+                        });
+                    }
+                });
             }
 
             @Override
@@ -52,16 +74,31 @@ public class ListRecipesPresenter implements ListRecipesContract.Presenter {
 
     @Override
     public void saveFavorite(Recipe recipe) {
-        dataSource.addFavorite(recipe, new BakingDataBase.OnSaveIngredient() {
-            @Override
-            public void onSave() {
-                view.showConfirmAddFavorite();
-            }
+        if (recipe != null) {
+            dataSource.addFavorite(recipe, new BakingDataBase.OnSaveIngredient() {
+                @Override
+                public void onSave() {
+                    view.showConfirmAddFavorite();
+                }
 
-            @Override
-            public void onFail() {
-                view.showNotAddFavorite();
-            }
-        });
+                @Override
+                public void onFail() {
+                    view.showNotAddFavorite();
+                }
+            });
+        } else {
+            dataSource.removeFavorite(new BakingDataBase.OnRemoveIngredient() {
+                @Override
+                public void onRemove() {
+                    view.showConfirmAddFavorite();
+                }
+
+                @Override
+                public void onFail() {
+                    view.showNotAddFavorite();
+                }
+            });
+        }
     }
+
 }

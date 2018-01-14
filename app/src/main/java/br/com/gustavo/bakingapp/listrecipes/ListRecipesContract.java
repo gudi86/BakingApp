@@ -12,7 +12,7 @@ import br.com.gustavo.bakingapp.data.model.Recipe;
 
 public interface ListRecipesContract {
     interface View extends BaseView<Presenter> {
-        void showRecipes(List<Recipe> recipes);
+        void showRecipes(List<Recipe> recipes, Recipe favorite);
 
         void showNoRecipes();
 
@@ -21,6 +21,8 @@ public interface ListRecipesContract {
         void showConfirmAddFavorite();
 
         void showNotAddFavorite();
+
+        void showNonFavoriteRecipe();
     }
 
     interface Presenter extends BasePresenter {

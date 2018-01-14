@@ -1,10 +1,7 @@
 package br.com.gustavo.bakingapp.listingredientwidget;
 
-import java.util.List;
-
-import br.com.gustavo.bakingapp.data.model.Ingredient;
+import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.source.BakingDataSource;
-import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
 import br.com.gustavo.bakingapp.data.source.database.BakingDataBase;
 
 /**
@@ -26,11 +23,11 @@ public class ListWidgetPresenter implements ListWidgetContract.Presenter {
 
     @Override
     public void start() {
-       data.fetchFavorite(new BakingDataBase.OnFetchIngredient() {
+       data.fetchFavorite(new BakingDataBase.OnFetchRecipeFavorite() {
             @Override
-            public void onfetchFavorite(List<Ingredient> ingredients) {
-                if (ingredients != null && ingredients.size() > 0) {
-                    view.showListOf(ingredients);
+            public void onfetchFavorite(Recipe favorite) {
+                if (favorite != null) {
+                    view.showListOf(favorite);
                 } else {
                     view.showNotListIngredient();
                 }

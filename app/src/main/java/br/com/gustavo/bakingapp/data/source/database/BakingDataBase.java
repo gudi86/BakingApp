@@ -1,10 +1,5 @@
 package br.com.gustavo.bakingapp.data.source.database;
 
-import android.database.ContentObserver;
-
-import java.util.List;
-
-import br.com.gustavo.bakingapp.data.model.Ingredient;
 import br.com.gustavo.bakingapp.data.model.Recipe;
 
 /**
@@ -19,12 +14,20 @@ public interface BakingDataBase {
         void onFail();
     }
 
-    interface OnFetchIngredient {
-        void onfetchFavorite(List<Ingredient> ingredients);
+    interface OnRemoveIngredient {
+        void onRemove();
+
+        void onFail();
+    }
+
+    interface OnFetchRecipeFavorite {
+        void onfetchFavorite(Recipe favorite);
     }
 
     void addFavorite(Recipe recipe, OnSaveIngredient callback);
 
-    void fetchFavorite(OnFetchIngredient onFetchIngredient);
+    void removeFavorite(OnRemoveIngredient callback);
+
+    void fetchFavorite(OnFetchRecipeFavorite onFetchIngredient);
 
 }

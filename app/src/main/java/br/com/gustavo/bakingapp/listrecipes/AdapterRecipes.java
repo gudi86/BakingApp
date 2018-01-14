@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,8 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.RecipeVi
 
     private List<Recipe> recipes;
 
+    private Recipe favorite;
+
     private OnClickRecipe onClickRecipe;
 
 
@@ -34,8 +37,9 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.RecipeVi
 
 
 
-    public AdapterRecipes(List<Recipe> recipes, OnClickRecipe onClickRecipe) {
+    public AdapterRecipes(List<Recipe> recipes, Recipe favorite, OnClickRecipe onClickRecipe) {
         this.recipes = recipes;
+        this.favorite = favorite;
         this.onClickRecipe = onClickRecipe;
     }
 
@@ -60,6 +64,11 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.RecipeVi
             holder.ivRecipe.setImageResource(R.drawable.default_recipe);
         }
 
+        if (favorite != null && recipe.getId() == favorite.getId()) {
+            holder.btnFavorite.setImageResource(R.drawable.icon_favorite_selected);
+        } else {
+            holder.btnFavorite.setImageResource(R.drawable.icon_favorite);
+        }
 
     }
 
@@ -70,15 +79,15 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.RecipeVi
 
     class RecipeViewHolder extends RecyclerView.ViewHolder {
 
-        private final Button btnFavorite;
+        private final ImageButton btnFavorite;
         private ImageView ivRecipe;
         private TextView tvName;
 
         public RecipeViewHolder(View itemView) {
             super(itemView);
-            ivRecipe = (ImageView) itemView.findViewById(R.id.ivRecipe);
-            tvName = (TextView) itemView.findViewById(R.id.tvName);
-            btnFavorite = itemView.findViewById(R.id.button_favorite);
+            ivRecipe = itemView.findViewById(R.id.image_recipe);
+            tvName = itemView.findViewById(R.id.text_name);
+            btnFavorite = itemView.findViewById(R.id.image_favorite);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -90,7 +99,14 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.RecipeVi
             btnFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onClickRecipe.onClickFavorite(recipes.get(getAdapterPosition()));
+                    Recipe currentRecipe = recipes.get(getAdapterPosition());
+                    if (currentRecipe == favorite) {
+                        favorite = null;
+                    } else {
+                        favorite = recipes.get(getAdapterPosition());
+                    }
+                    onClickRecipe.onClickFavorite(favorite);
+                    notifyDataSetChanged();
                 }
             });
         }

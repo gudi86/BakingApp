@@ -6,13 +6,14 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import br.com.gustavo.bakingapp.R;
-import br.com.gustavo.bakingapp.data.model.Recipe;
+import br.com.gustavo.bakingapp.data.source.database.BakingContract;
 import br.com.gustavo.bakingapp.listrecipes.MainActivity;
 
 /**
@@ -23,34 +24,57 @@ public class IngredientWidget extends AppWidgetProvider {
 
     private static final String LOG_TAG = IngredientWidget.class.getName();
 
-    public static final String REFRESH_LIST_INGREDIENTS = "REFRESH_LIST_INGREDIENTS";
+    public static final String ADD_LIST_INGREDIENTS_FAVORITE = "ADD_LIST_INGREDIENTS_FAVORITE";
+    public static final String LOAD_RECIPE_FAVORITE = "LOAD_RECIPE_FAVORITE";
 
-    public static void setRecipeIngredient(Context context, boolean isUpdateIngredients) {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int[] appIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, IngredientWidget.class));
+    public IngredientWidget() {
+        Log.d(LOG_TAG, "Teste");
+    }
 
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_ingredient_list);
-
-        if (isUpdateIngredients) {
-            Intent intent = new Intent(context, ListWidgetService.class);
-            // Add the app widget ID to the intent extras.
-            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            views.setViewVisibility(R.id.widget_lst_ingredient, View.VISIBLE);
-            views.setRemoteAdapter(R.id.widget_lst_ingredient, intent);
-            appWidgetManager.notifyAppWidgetViewDataChanged(appIds, R.id.widget_lst_ingredient);
-        } else {
-            views.setViewVisibility(R.id.widget_lst_ingredient, View.GONE);
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        Log.d(LOG_TAG, "onReceive");
+        if (intent.getAction().equals(ADD_LIST_INGREDIENTS_FAVORITE)) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context.getApplicationContext());
+            ComponentName thisWidget = new ComponentName(context.getApplicationContext(), IngredientWidget.class);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+            onUpdate(context, appWidgetManager, appWidgetIds);
         }
-        appWidgetManager.updateAppWidget(appIds, views);
-
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Intent intent = new Intent(context, IngredientService.class);
-        intent.setAction(IngredientService.ACTION_SET_RECIPE_FOR_WIDGET);
-        context.startService(intent);
+        Log.d(LOG_TAG, "onUpdate");
+        for (int i = 0; i < appWidgetIds.length; i++) {
+            Log.d(LOG_TAG, "appWidgetId: " + appWidgetIds[i]);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_ingredient_list);
 
+            Cursor cursor = context.getContentResolver().query(BakingContract.RecipeEntry.CONTENT_URI, null, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                views.setViewVisibility(R.id.layout_recipe, View.VISIBLE);
+                Intent intent = new Intent(context, ListWidgetService.class);
+                intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+                views.setViewVisibility(R.id.widget_lst_ingredient, View.VISIBLE);
+
+                // Set button click
+                Intent intentClick = new Intent(context, MainActivity.class);
+                intentClick.setAction(LOAD_RECIPE_FAVORITE);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentClick, PendingIntent.FLAG_UPDATE_CURRENT);
+                views.setOnClickPendingIntent(R.id.button_go_recipe, pendingIntent);
+
+                views.setTextViewText(R.id.text_title_recipe, cursor.getString(cursor.getColumnIndex(BakingContract.RecipeEntry.COLUMN_NAME)));
+
+                views.setRemoteAdapter(R.id.widget_lst_ingredient, intent);
+                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds[i], R.id.widget_lst_ingredient);
+            } else {
+                views.setViewVisibility(R.id.layout_recipe, View.GONE);
+            }
+            appWidgetManager.updateAppWidget(appWidgetIds[i], views);
+
+        }
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
 

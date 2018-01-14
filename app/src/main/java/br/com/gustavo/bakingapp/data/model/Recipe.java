@@ -17,6 +17,10 @@ public class Recipe implements Parcelable {
     private List<Ingredient> ingredients;
     private List<Step> steps;
 
+    public Recipe() {
+
+    }
+
     protected Recipe(Parcel in) {
         if (in.readByte() == 0) {
             id = null;

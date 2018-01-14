@@ -1,6 +1,5 @@
 package br.com.gustavo.bakingapp.listingredientwidget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -13,7 +12,6 @@ import br.com.gustavo.bakingapp.R;
 import br.com.gustavo.bakingapp.data.model.Ingredient;
 import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
-import br.com.gustavo.bakingapp.listrecipes.MainActivity;
 
 /**
  * Created by gustavomagalhaes on 1/3/18.
@@ -21,8 +19,6 @@ import br.com.gustavo.bakingapp.listrecipes.MainActivity;
 
 public class ListWidgetService extends RemoteViewsService {
     private static final String LOG_TAG = ListWidgetService.class.getName();
-    public static final String INGREDIENT_ACTION = "br.com.gustavo.bakingapp.INGREDIENT_ACTION";
-
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -50,12 +46,11 @@ public class ListWidgetService extends RemoteViewsService {
         @Override
         public void setPresenter(ListWidgetContract.Presenter presenter) {
             this.presenter = presenter;
-            this.presenter.start();
         }
 
         @Override
-        public void showListOf(List<Ingredient> ingredients) {
-            this.ingredients = ingredients;
+        public void showListOf(Recipe favorite) {
+            this.ingredients = favorite.getIngredients();
         }
 
         @Override
@@ -71,6 +66,7 @@ public class ListWidgetService extends RemoteViewsService {
         @Override
         public void onDataSetChanged() {
             Log.d(LOG_TAG, "Executou o onDataSetChanged");
+            this.presenter.start();
         }
 
         @Override

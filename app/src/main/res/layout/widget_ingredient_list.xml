@@ -2,26 +2,45 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="#fff"
     android:padding="@dimen/pad_widget">
-
-    <!--<Button-->
-        <!--android:id="@+id/button_teste_widget"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:text="@string/msg_not_recipe_selected" />-->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/msg_not_recipe_selected" />
+        android:textColor="@color/cardview_dark_background"
+        android:text="@string/msg_go_recipe" />
 
-    <ListView
-        android:id="@+id/widget_lst_ingredient"
+    <RelativeLayout
+        android:id="@+id/layout_recipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_title_recipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textColor="@color/cardview_dark_background"
+            tools:text="Apple pie" />
+
+        <ListView
+            android:id="@+id/widget_lst_ingredient"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/button_go_recipe"
+            android:layout_below="@+id/text_title_recipe"
+            android:background="@android:color/white" />
+
+        <Button
+            android:id="@+id/button_go_recipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="@string/msg_go_recipe" />
+    </RelativeLayout>
 
 </RelativeLayout>

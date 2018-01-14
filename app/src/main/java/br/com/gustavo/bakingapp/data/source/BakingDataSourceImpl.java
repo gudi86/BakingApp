@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -34,6 +33,8 @@ public class BakingDataSourceImpl implements BakingDataSource {
 
     private static final String LOG_TAG = BakingDataSourceImpl.class.getName();
     private Context context;
+
+    private List<Recipe> recipes = null;
 
     private static BakingDataSourceImpl dataSource;
 
@@ -69,7 +70,8 @@ public class BakingDataSourceImpl implements BakingDataSource {
                     fetchRecipe.onFailFetch(new Throwable("Body is empyt"));
                 }
 
-                fetchRecipe.onRecipeLoad(response.body());
+                recipes = response.body();
+                fetchRecipe.onRecipeLoad(recipes);
             }
 
             @Override
@@ -79,13 +81,17 @@ public class BakingDataSourceImpl implements BakingDataSource {
         });
     }
 
-
-
     @Override
     public void addFavorite(Recipe recipe, final OnSaveIngredient callback) {
 
         context.getContentResolver().delete(BakingContract.IngredientEntry.CONTENT_URI, null, null);
+        context.getContentResolver().delete(BakingContract.RecipeEntry.CONTENT_URI, null, null);
 
+        ContentValues recipeValue = new ContentValues();
+        recipeValue.put(BakingContract.RecipeEntry.COLUMN_RECIPE_ID, recipe.getId());
+        recipeValue.put(BakingContract.RecipeEntry.COLUMN_NAME, recipe.getName());
+
+        context.getContentResolver().insert(BakingContract.RecipeEntry.CONTENT_URI, recipeValue);
 
         ContentValues[] contentValues = new ContentValues[recipe.getIngredients().size()];
 
@@ -141,29 +147,76 @@ public class BakingDataSourceImpl implements BakingDataSource {
     }
 
     @Override
-    public void fetchFavorite(final OnFetchIngredient onFetchIngredient) {
+    public void removeFavorite(final OnRemoveIngredient callback) {
+
+        ContentObserver observer = new ContentObserver(new Handler(Looper.getMainLooper())) {
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+                context.getContentResolver().unregisterContentObserver(this);
+                callback.onRemove();
+            }
+        };
+
+        context.getContentResolver().registerContentObserver(
+                BakingContract.RecipeEntry.CONTENT_URI,
+                false,
+                observer);
+
+        context.getContentResolver().delete(BakingContract.IngredientEntry.CONTENT_URI, null, null);
+        context.getContentResolver().delete(BakingContract.RecipeEntry.CONTENT_URI, null, null);
+    }
+
+    @Override
+    public void fetchFavorite(final OnFetchRecipeFavorite onFetchIngredient) {
 
         Cursor cursor = context.getContentResolver().query(
-                BakingContract.IngredientEntry.CONTENT_URI,
+                BakingContract.RecipeEntry.CONTENT_URI,
                 null,
                 null,
                 null,
                 null);
 
-        List<Ingredient> ingredients = new ArrayList<>();
-        if (cursor != null) {
-            for (cursor.moveToFirst(); !cursor.isLast(); cursor.moveToNext()) {
-                Ingredient ingredient = new Ingredient();
-                ingredient.setQuantity(cursor.getDouble(cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_QUATITY)));
-                ingredient.setIngredient(cursor.getString(cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_INGREDIENT)));
-                ingredient.setMeasure(cursor.getString(cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_MEASURE)));
-                ingredients.add(ingredient);
-            }
+        Recipe recipe = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            recipe = new Recipe();
+            recipe.setId(cursor.getInt(cursor.getColumnIndex(BakingContract.RecipeEntry.COLUMN_RECIPE_ID)));
+            recipe.setName(cursor.getString(cursor.getColumnIndex(BakingContract.RecipeEntry.COLUMN_NAME)));
 
-            if (!cursor.isClosed()) {
-                cursor.close();
+            cursor = context.getContentResolver().query(
+                    BakingContract.IngredientEntry.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    null);
+
+            List<Ingredient> ingredients = new ArrayList<>();
+            if (cursor != null) {
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                    Ingredient ingredient = new Ingredient();
+                    ingredient.setQuantity(cursor.getDouble(cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_QUATITY)));
+                    ingredient.setIngredient(cursor.getString(cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_INGREDIENT)));
+                    ingredient.setMeasure(cursor.getString(cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_MEASURE)));
+                    ingredients.add(ingredient);
+                }
+
+                if (!cursor.isClosed()) {
+                    cursor.close();
+                }
+                recipe.setIngredients(ingredients);
             }
         }
-        onFetchIngredient.onfetchFavorite(ingredients);
+        onFetchIngredient.onfetchFavorite(recipe);
+    }
+
+    @Override
+    public void fetchRecipeBy(int id, IFetchRecipe iFetchRecipe) {
+        Recipe fetchRecipe = null;
+        for (Recipe recipe:recipes) {
+            if (recipe.getId() == id) {
+                fetchRecipe = recipe; break;
+            }
+        }
+        iFetchRecipe.getRecipe(fetchRecipe);
     }
 }

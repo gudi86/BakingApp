@@ -67,7 +67,9 @@ public class ListStepRecipeFragment extends Fragment implements AdapterStepDetai
     @Override
     public void onResume() {
         super.onResume();
-        presenter.loadRecipe((Recipe) getActivity().getIntent().getParcelableExtra(MainActivity.RECIPE));
+
+        Recipe recipe = getActivity().getIntent().getParcelableExtra(MainActivity.RECIPE);
+        presenter.loadRecipe(recipe);
     }
 
     @Override

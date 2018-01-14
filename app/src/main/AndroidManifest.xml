@@ -25,7 +25,7 @@
         <provider
             android:name=".data.source.database.BakingContentProvider"
             android:authorities="br.com.gustavo.baking"
-            android:exported="false" />
+            android:exported="true" />
 
         <receiver android:name=".listingredientwidget.IngredientWidget" >
             <intent-filter>
@@ -34,8 +34,6 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/ingredient_widget_info" />
         </receiver>
-
-        <service android:name=".listingredientwidget.IngredientService" />
 
         <service android:name=".listingredientwidget.ListWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
