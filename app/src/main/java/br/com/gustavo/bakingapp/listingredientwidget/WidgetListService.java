@@ -17,8 +17,8 @@ import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
  * Created by gustavomagalhaes on 1/3/18.
  */
 
-public class ListWidgetService extends RemoteViewsService {
-    private static final String LOG_TAG = ListWidgetService.class.getName();
+public class WidgetListService extends RemoteViewsService {
+    private static final String LOG_TAG = WidgetListService.class.getName();
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -29,22 +29,22 @@ public class ListWidgetService extends RemoteViewsService {
         );
     }
 
-    static class ListIngredientRemoteViewfactory implements RemoteViewsService.RemoteViewsFactory, ListWidgetContract.View {
+    static class ListIngredientRemoteViewfactory implements RemoteViewsService.RemoteViewsFactory, WidgetListContract.View {
 
         private static final String LOG_TAG = ListIngredientRemoteViewfactory.class.getName();
         private Context context;
         private List<Ingredient> ingredients = null;
-        private ListWidgetContract.Presenter presenter;
+        private WidgetListContract.Presenter presenter;
 
         public ListIngredientRemoteViewfactory(Context context, Intent intent) {
             Log.d(LOG_TAG, "Chamou o metodo ListIngredientRemoteViewfactory");
             this.context = context;
 
-            new ListWidgetPresenter(BakingDataSourceImpl.getInstance(context), this);
+            new WidgetListPresenter(BakingDataSourceImpl.getInstance(context), this);
         }
 
         @Override
-        public void setPresenter(ListWidgetContract.Presenter presenter) {
+        public void setPresenter(WidgetListContract.Presenter presenter) {
             this.presenter = presenter;
         }
 

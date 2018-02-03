@@ -14,7 +14,7 @@ import android.widget.RemoteViews;
 
 import br.com.gustavo.bakingapp.R;
 import br.com.gustavo.bakingapp.data.source.database.BakingContract;
-import br.com.gustavo.bakingapp.listrecipes.MainActivity;
+import br.com.gustavo.bakingapp.recipelist.MainActivity;
 
 /**
  * Created by gustavomagalhaes on 12/28/17.
@@ -54,7 +54,7 @@ public class IngredientWidget extends AppWidgetProvider {
 
             if (cursor != null && cursor.moveToFirst()) {
                 views.setViewVisibility(R.id.layout_recipe, View.VISIBLE);
-                Intent intent = new Intent(context, ListWidgetService.class);
+                Intent intent = new Intent(context, WidgetListService.class);
                 intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
                 views.setViewVisibility(R.id.widget_lst_ingredient, View.VISIBLE);
 

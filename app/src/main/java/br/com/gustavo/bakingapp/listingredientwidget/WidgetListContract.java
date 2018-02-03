@@ -8,7 +8,7 @@ import br.com.gustavo.bakingapp.data.model.Recipe;
  * Created by gustavomagalhaes on 1/8/18.
  */
 
-public interface ListWidgetContract {
+public interface WidgetListContract {
     interface View extends BaseView<Presenter> {
         void showListOf(Recipe favorite);
 

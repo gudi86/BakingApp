@@ -1,4 +1,4 @@
-package br.com.gustavo.bakingapp.masterrecipe.liststeprecipe;
+package br.com.gustavo.bakingapp.masterrecipe.recipesteplist;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,16 +17,16 @@ import br.com.gustavo.bakingapp.R;
 import br.com.gustavo.bakingapp.data.model.Ingredient;
 import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.model.Step;
-import br.com.gustavo.bakingapp.listrecipes.MainActivity;
+import br.com.gustavo.bakingapp.recipelist.MainActivity;
 
 /**
  * Created by gustavomagalhaes on 11/27/17.
  */
 
-public class ListStepRecipeFragment extends Fragment implements AdapterStepDetail.OnClickStep, StepRecipeContract.View{
+public class RecipeStepListFragment extends Fragment implements AdapterStepDetail.OnClickStep, RecipeStepContract.View{
 
-    private static final String LOG_TAG = ListStepRecipeFragment.class.getName();
-    private StepRecipeContract.Presenter presenter;
+    private static final String LOG_TAG = RecipeStepListFragment.class.getName();
+    private RecipeStepContract.Presenter presenter;
     private RecyclerView lstRecipeStep;
 
 
@@ -37,7 +37,7 @@ public class ListStepRecipeFragment extends Fragment implements AdapterStepDetai
 
     private OnSelectedStep onCallbackSelectStep = null;
 
-    public ListStepRecipeFragment() {
+    public RecipeStepListFragment() {
 
     }
 
@@ -60,7 +60,7 @@ public class ListStepRecipeFragment extends Fragment implements AdapterStepDetai
     }
 
     @Override
-    public void setPresenter(StepRecipeContract.Presenter presenter) {
+    public void setPresenter(RecipeStepContract.Presenter presenter) {
         this.presenter = presenter;
     }
 

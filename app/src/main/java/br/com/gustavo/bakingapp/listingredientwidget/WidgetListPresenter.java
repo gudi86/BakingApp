@@ -8,12 +8,12 @@ import br.com.gustavo.bakingapp.data.source.database.BakingDataBase;
  * Created by gustavomagalhaes on 1/8/18.
  */
 
-public class ListWidgetPresenter implements ListWidgetContract.Presenter {
+public class WidgetListPresenter implements WidgetListContract.Presenter {
 
     private BakingDataSource data;
-    private ListWidgetContract.View view;
+    private WidgetListContract.View view;
 
-    public ListWidgetPresenter(BakingDataSource dataSource, ListWidgetContract.View view) {
+    public WidgetListPresenter(BakingDataSource dataSource, WidgetListContract.View view) {
 
         this.data = dataSource;
         this.view = view;

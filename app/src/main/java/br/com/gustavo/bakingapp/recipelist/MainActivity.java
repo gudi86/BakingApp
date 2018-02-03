@@ -1,4 +1,4 @@
-package br.com.gustavo.bakingapp.listrecipes;
+package br.com.gustavo.bakingapp.recipelist;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -21,13 +21,13 @@ import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
 import br.com.gustavo.bakingapp.listingredientwidget.IngredientWidget;
 import br.com.gustavo.bakingapp.masterrecipe.MasterStepDetailActivity;
 
-public class MainActivity extends AppCompatActivity implements ListRecipesContract.View, AdapterRecipes.OnClickRecipe {
+public class MainActivity extends AppCompatActivity implements RecipeListContract.View, AdapterRecipes.OnClickRecipe {
 
     private static final String LOG_TAG = MainActivity.class.getName();
 
     public static final String RECIPE = "RECIPE";
 
-    private ListRecipesContract.Presenter presenter;
+    private RecipeListContract.Presenter presenter;
 
     private RecyclerView recyclerView;
     private ViewGroup layoutError;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements ListRecipesContra
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
-        new ListRecipesPresenter(BakingDataSourceImpl.getInstance(getBaseContext()), this);
+        new RecipeListPresenter(BakingDataSourceImpl.getInstance(getBaseContext()), this);
 
         recyclerView = findViewById(R.id.rv_recipes);
         layoutError = findViewById(R.id.ll_wrong_data);
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements ListRecipesContra
     }
 
     @Override
-    public void setPresenter(@NonNull ListRecipesContract.Presenter presenter) {
+    public void setPresenter(@NonNull RecipeListContract.Presenter presenter) {
         this.presenter = presenter;
     }
 

@@ -1,4 +1,4 @@
-package br.com.gustavo.bakingapp.masterrecipe.liststeprecipe;
+package br.com.gustavo.bakingapp.masterrecipe.recipesteplist;
 
 import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.model.Step;
@@ -8,13 +8,13 @@ import br.com.gustavo.bakingapp.data.source.BakingDataSource;
  * Created by gustavo on 09/12/17.
  */
 
-public class StepRecipePresenter implements StepRecipeContract.Presenter {
+public class RecipeStepPresenter implements RecipeStepContract.Presenter {
 
-    private StepRecipeContract.View view;
+    private RecipeStepContract.View view;
     private BakingDataSource dataSource;
 
 
-    public StepRecipePresenter(BakingDataSource bakingDataSource, StepRecipeContract.View view) {
+    public RecipeStepPresenter(BakingDataSource bakingDataSource, RecipeStepContract.View view) {
         this.dataSource = bakingDataSource;
         this.view = view;
 

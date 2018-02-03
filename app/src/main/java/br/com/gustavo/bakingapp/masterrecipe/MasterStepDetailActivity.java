@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
@@ -15,9 +14,9 @@ import br.com.gustavo.bakingapp.R;
 import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.model.Step;
 import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
-import br.com.gustavo.bakingapp.listrecipes.MainActivity;
-import br.com.gustavo.bakingapp.masterrecipe.liststeprecipe.ListStepRecipeFragment;
-import br.com.gustavo.bakingapp.masterrecipe.liststeprecipe.StepRecipePresenter;
+import br.com.gustavo.bakingapp.recipelist.MainActivity;
+import br.com.gustavo.bakingapp.masterrecipe.recipesteplist.RecipeStepListFragment;
+import br.com.gustavo.bakingapp.masterrecipe.recipesteplist.RecipeStepPresenter;
 import br.com.gustavo.bakingapp.masterrecipe.stepdetailrecipe.StepDetailActivity;
 import br.com.gustavo.bakingapp.masterrecipe.stepdetailrecipe.StepDetailFragment;
 
@@ -25,7 +24,7 @@ import br.com.gustavo.bakingapp.masterrecipe.stepdetailrecipe.StepDetailFragment
  * Created by gustavomagalhaes on 11/30/17.
  */
 
-public class MasterStepDetailActivity extends AppCompatActivity implements ListStepRecipeFragment.OnSelectedStep, MasterRecipeContract.View {
+public class MasterStepDetailActivity extends AppCompatActivity implements RecipeStepListFragment.OnSelectedStep, MasterRecipeContract.View {
 
     public static final  String STEP_RECIPE = "STEP_RECIPE";
     public static final String IDX_STEP = "IDX_STEP";
@@ -45,8 +44,8 @@ public class MasterStepDetailActivity extends AppCompatActivity implements ListS
 
         new MasterRecipePresenter(BakingDataSourceImpl.getInstance(getBaseContext()), this);
 
-        ListStepRecipeFragment stepRecipeFragment = (ListStepRecipeFragment) getSupportFragmentManager().findFragmentById(R.id.list_step_detail);
-        new StepRecipePresenter(BakingDataSourceImpl.getInstance(getBaseContext()), stepRecipeFragment);
+        RecipeStepListFragment stepRecipeFragment = (RecipeStepListFragment) getSupportFragmentManager().findFragmentById(R.id.list_step_detail);
+        new RecipeStepPresenter(BakingDataSourceImpl.getInstance(getBaseContext()), stepRecipeFragment);
 
         presenter.loadStepDetail((Recipe) getIntent().getParcelableExtra(MainActivity.RECIPE));
     }

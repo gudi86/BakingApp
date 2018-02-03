@@ -1,4 +1,4 @@
-package br.com.gustavo.bakingapp.listrecipes;
+package br.com.gustavo.bakingapp.recipelist;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import br.com.gustavo.bakingapp.data.model.Recipe;
  * Created by gustavomagalhaes on 11/21/17.
  */
 
-public interface ListRecipesContract {
+public interface RecipeListContract {
     interface View extends BaseView<Presenter> {
         void showRecipes(List<Recipe> recipes, Recipe favorite);
 

@@ -1,4 +1,4 @@
-package br.com.gustavo.bakingapp.listrecipes;
+package br.com.gustavo.bakingapp.recipelist;
 
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -15,14 +15,14 @@ import br.com.gustavo.bakingapp.data.source.remote.BakingRemote;
  * Created by gustavomagalhaes on 11/21/17.
  */
 
-public class ListRecipesPresenter implements ListRecipesContract.Presenter {
+public class RecipeListPresenter implements RecipeListContract.Presenter {
 
-    private static final String LOG_TAG = ListRecipesPresenter.class.getName();
-    private ListRecipesContract.View view;
+    private static final String LOG_TAG = RecipeListPresenter.class.getName();
+    private RecipeListContract.View view;
 
     private BakingDataSource dataSource;
 
-    public ListRecipesPresenter(@NonNull BakingDataSource bakingDataSource, @NonNull ListRecipesContract.View view) {
+    public RecipeListPresenter(@NonNull BakingDataSource bakingDataSource, @NonNull RecipeListContract.View view) {
 
         dataSource = bakingDataSource;
         this.view = view;

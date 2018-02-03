@@ -1,4 +1,4 @@
-package br.com.gustavo.bakingapp.masterrecipe.liststeprecipe;
+package br.com.gustavo.bakingapp.masterrecipe.recipesteplist;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import br.com.gustavo.bakingapp.data.model.Step;
  * Created by gustavo on 09/12/17.
  */
 
-public interface StepRecipeContract {
+public interface RecipeStepContract {
     interface View extends BaseView<Presenter> {
         void showStep(Step step);
 

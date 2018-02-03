@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".listrecipes.MainActivity">
+        <activity android:name=".recipelist.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -35,7 +35,7 @@
                 android:resource="@xml/ingredient_widget_info" />
         </receiver>
 
-        <service android:name=".listingredientwidget.ListWidgetService"
+        <service android:name=".listingredientwidget.WidgetListService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
             android:exported="false" />
 

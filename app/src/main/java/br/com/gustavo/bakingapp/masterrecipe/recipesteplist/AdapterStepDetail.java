@@ -1,4 +1,4 @@
-package br.com.gustavo.bakingapp.masterrecipe.liststeprecipe;
+package br.com.gustavo.bakingapp.masterrecipe.recipesteplist;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
