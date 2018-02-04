@@ -1,26 +1,18 @@
 package br.com.gustavo.bakingapp.masterrecipe.stepdetailrecipe;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.support.v4.os.ConfigurationCompat;
-import android.support.v4.util.Preconditions;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.gustavo.bakingapp.R;
 import br.com.gustavo.bakingapp.data.model.Step;
 import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
-import br.com.gustavo.bakingapp.masterrecipe.MasterStepDetailActivity;
+import br.com.gustavo.bakingapp.masterrecipe.MasterRecipeActivity;
 
 /**
  * Created by gustavomagalhaes on 12/2/17.
@@ -53,9 +45,9 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailC
         }
 
         if (getIntent() != null) {
-            List<Step> steps = getIntent().getParcelableArrayListExtra(MasterStepDetailActivity.STEP_RECIPE);
+            List<Step> steps = getIntent().getParcelableArrayListExtra(MasterRecipeActivity.STEP_RECIPE);
             presenter.loadStepByIndex(steps,
-                    getIntent().getIntExtra(MasterStepDetailActivity.IDX_STEP, 0));
+                    getIntent().getIntExtra(MasterRecipeActivity.IDX_STEP, 0));
         } else {
             Log.d(TAG_LOG, "Intent is null");
         }
@@ -125,8 +117,8 @@ public class StepDetailActivity extends AppCompatActivity implements StepDetailC
             stepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedState, "frag");
         }
         getIntent().putExtra(
-                MasterStepDetailActivity.IDX_STEP,
-                getIntent().getParcelableArrayListExtra(MasterStepDetailActivity.STEP_RECIPE).indexOf(step));
+                MasterRecipeActivity.IDX_STEP,
+                getIntent().getParcelableArrayListExtra(MasterRecipeActivity.STEP_RECIPE).indexOf(step));
 
         stepDetailFragment.setStep(step);
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container_step_detail, stepDetailFragment).commitNow();

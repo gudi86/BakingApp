@@ -3,6 +3,7 @@ package br.com.gustavo.bakingapp.recipelist;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +20,7 @@ import br.com.gustavo.bakingapp.R;
 import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
 import br.com.gustavo.bakingapp.listingredientwidget.IngredientWidget;
-import br.com.gustavo.bakingapp.masterrecipe.MasterStepDetailActivity;
+import br.com.gustavo.bakingapp.masterrecipe.MasterRecipeActivity;
 
 public class MainActivity extends AppCompatActivity implements RecipeListContract.View, AdapterRecipes.OnClickRecipe {
 
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements RecipeListContrac
 
     private RecyclerView recyclerView;
     private ViewGroup layoutError;
+
+    private RecipeListIdlingResource recipeListIdlingResource = null;
 
 
     @Override
@@ -55,7 +58,19 @@ public class MainActivity extends AppCompatActivity implements RecipeListContrac
         }
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
+
+        getRecipeListIdle();
+        if(recipeListIdlingResource != null)
+            recipeListIdlingResource.setIdleNow(false);
+
         presenter.start();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
     }
 
     @Override
@@ -67,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements RecipeListContrac
     public void showRecipes(List<Recipe> recipes, Recipe favorite) {
         isWrongData(false);
         recyclerView.setAdapter(new AdapterRecipes(recipes, favorite, this));
+
+        if (recipeListIdlingResource != null)
+            recipeListIdlingResource.setIdleNow(true);
 
         if ( getIntent().getAction().equals(IngredientWidget.LOAD_RECIPE_FAVORITE) ) {
             getIntent().setAction(Intent.ACTION_MAIN);
@@ -93,12 +111,15 @@ public class MainActivity extends AppCompatActivity implements RecipeListContrac
     @Override
     public void showNoRecipes() {
         isWrongData(true);
+
+        if (recipeListIdlingResource != null)
+            recipeListIdlingResource.setIdleNow(true);
     }
 
     @Override
     public void showSelected(Recipe recipe) {
         isWrongData(false);
-        Intent intent = new Intent(this, MasterStepDetailActivity.class);
+        Intent intent = new Intent(this, MasterRecipeActivity.class);
         intent.putExtra(RECIPE, recipe);
         startActivity(intent);
     }
@@ -131,6 +152,15 @@ public class MainActivity extends AppCompatActivity implements RecipeListContrac
     private void isWrongData(boolean isWrong) {
         recyclerView.setVisibility(isWrong?View.GONE:View.VISIBLE);
         layoutError.setVisibility(isWrong?View.VISIBLE:View.GONE);
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public RecipeListIdlingResource getRecipeListIdle() {
+        if (recipeListIdlingResource == null) {
+            recipeListIdlingResource = new RecipeListIdlingResource();
+        }
+        return recipeListIdlingResource;
     }
 
 }

@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".masterrecipe.MasterStepDetailActivity" />
+        <activity android:name=".masterrecipe.MasterRecipeActivity" />
         <activity android:name=".masterrecipe.stepdetailrecipe.StepDetailActivity"
             android:configChanges="orientation"/>
 

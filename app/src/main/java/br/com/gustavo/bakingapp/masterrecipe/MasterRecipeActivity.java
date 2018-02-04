@@ -24,7 +24,7 @@ import br.com.gustavo.bakingapp.masterrecipe.stepdetailrecipe.StepDetailFragment
  * Created by gustavomagalhaes on 11/30/17.
  */
 
-public class MasterStepDetailActivity extends AppCompatActivity implements RecipeStepListFragment.OnSelectedStep, MasterRecipeContract.View {
+public class MasterRecipeActivity extends AppCompatActivity implements RecipeStepListFragment.OnSelectedStep, MasterRecipeContract.View {
 
     public static final  String STEP_RECIPE = "STEP_RECIPE";
     public static final String IDX_STEP = "IDX_STEP";
