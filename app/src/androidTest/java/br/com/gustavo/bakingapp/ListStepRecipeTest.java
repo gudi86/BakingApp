@@ -4,7 +4,13 @@ import android.content.Intent;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,7 +27,9 @@ import br.com.gustavo.bakingapp.masterrecipe.MasterRecipeActivity;
 import br.com.gustavo.bakingapp.recipelist.MainActivity;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -30,11 +38,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  */
 
 @RunWith(AndroidJUnit4.class)
-public class MasterStepDetailTest {
+public class ListStepRecipeTest {
 
     @Rule
     public ActivityTestRule<MasterRecipeActivity> ruleMasterStepDetailActivity
             = new ActivityTestRule(MasterRecipeActivity.class, true, false);
+
+
 
     private Recipe recipe;
 
@@ -56,7 +66,7 @@ public class MasterStepDetailTest {
             Step step = new Step();
             step.setId(i);
             step.setDescription("Long Description");
-            step.setShortDescription("Short Description");
+            step.setShortDescription("Short Description " + (i + 1));
             step.setThumbnailUrl("");
             step.setVideoUrl("");
             steps.add(step);
@@ -77,6 +87,7 @@ public class MasterStepDetailTest {
         Intent intent = new Intent();
         intent.putExtra(MainActivity.RECIPE, recipe);
         ruleMasterStepDetailActivity.launchActivity(intent);
+//        ruleMasterStepDetailActivity.getActivity().getSupportFragmentManager().beginTransaction();
 
         StringBuffer labelIngredient = new StringBuffer("");
         for (Ingredient i : recipe.getIngredients()) {
@@ -90,20 +101,46 @@ public class MasterStepDetailTest {
         }
         onView(withId(R.id.tv_ingredient)).check(matches(withText(labelIngredient.toString())));
 
-        // Doesn't work
-//        onView(withId(R.id.rv_recipe_detail)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
-//        onView(withId(R.id.tv_step_description)).check(matches(withText(recipe.getSteps().get(0).getShortDescription())));
 
-//        onView(withId(R.id.rv_recipe_detail)).perform(scrollToPosition(1));
-//        onView(withRecyclerView(R.id.rv_recipe_detail)
-//                .atPositionOnView(1, R.id.tv_step_description))
-//                .check(matches(withText(recipe.getSteps().get(0).getShortDescription())));
-
-
+        onView(withText(recipe.getSteps().get(0).getShortDescription()))
+                .perform(click());
+        onView(withId(R.id.tv_step_description))
+                .check(matches(withText(recipe.getSteps().get(0).getDescription())));
     }
 
     @After
     public void finish() {
         Intents.release();
     }
+
+    //
+//    private static Matcher<View> withDataAtPosition(final int id, final String data, final int position) {
+//        return new TypeSafeMatcher<View>() {
+//
+//            @Override
+//            public void describeTo(Description description) {
+//                description.appendText("My text");
+////                describeTo(description);
+//            }
+//
+//            @Override
+//            protected boolean matchesSafely(View item) {
+//
+//                if (!(item instanceof RecyclerView)) {
+//                    return false;
+//                }
+//                RecyclerView recyclerView = (RecyclerView) item;
+//
+//                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+//
+//                TextView view = viewHolder.itemView.findViewById(id);
+//
+//                if (view.getText().equals(data)) {
+//                    return true;
+//                }
+//
+//                return false;
+//            }
+//        };
+//    }
 }
