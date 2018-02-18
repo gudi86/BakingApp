@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 
 import br.com.gustavo.bakingapp.masterrecipe.MasterRecipeActivity;
 import br.com.gustavo.bakingapp.recipelist.MainActivity;
-import br.com.gustavo.bakingapp.recipelist.RecipeListIdlingResource;
+import br.com.gustavo.bakingapp.masterrecipe.RecipeIdlingResource;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -33,7 +33,7 @@ public class RecipeListTest {
     @Rule
     public ActivityTestRule<MainActivity> mainActivity = new ActivityTestRule<>(MainActivity.class);
 
-    private RecipeListIdlingResource recipeListIdlingResource;
+    private RecipeIdlingResource recipeListIdlingResource;
 
     @Before
     public void init() {

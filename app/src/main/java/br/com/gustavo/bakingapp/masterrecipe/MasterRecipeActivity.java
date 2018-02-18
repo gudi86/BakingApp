@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -29,7 +31,6 @@ public class MasterRecipeActivity extends AppCompatActivity implements RecipeSte
     public static final  String STEP_RECIPE = "STEP_RECIPE";
     public static final String IDX_STEP = "IDX_STEP";
 
-    private Recipe recipe;
     private MasterRecipeContract.Presenter presenter;
 
     @Override
@@ -79,6 +80,5 @@ public class MasterRecipeActivity extends AppCompatActivity implements RecipeSte
     public boolean isTablet() {
         return getResources().getBoolean(R.bool.isTablet);
     }
-
 
 }

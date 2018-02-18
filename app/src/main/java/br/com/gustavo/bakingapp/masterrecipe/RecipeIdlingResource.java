@@ -1,4 +1,4 @@
-package br.com.gustavo.bakingapp.recipelist;
+package br.com.gustavo.bakingapp.masterrecipe;
 
 import android.support.test.espresso.IdlingResource;
 
@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by gustavomagalhaes on 2/3/18.
  */
 
-public class RecipeListIdlingResource implements IdlingResource {
+public class RecipeIdlingResource implements IdlingResource {
 
     private AtomicBoolean isIdle = new AtomicBoolean(false);
     private ResourceCallback myCallback;

@@ -1,6 +1,7 @@
 package br.com.gustavo.bakingapp;
 
 import android.content.Intent;
+import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -24,6 +25,7 @@ import br.com.gustavo.bakingapp.data.model.Ingredient;
 import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.model.Step;
 import br.com.gustavo.bakingapp.masterrecipe.MasterRecipeActivity;
+import br.com.gustavo.bakingapp.masterrecipe.RecipeIdlingResource;
 import br.com.gustavo.bakingapp.recipelist.MainActivity;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -42,51 +44,66 @@ public class ListStepRecipeTest {
 
     @Rule
     public ActivityTestRule<MasterRecipeActivity> ruleMasterStepDetailActivity
-            = new ActivityTestRule(MasterRecipeActivity.class, true, false);
+            = new ActivityTestRule(MasterRecipeActivity.class) {
+        @Override
+        protected Intent getActivityIntent() {
+            List<Ingredient> ingredients = new ArrayList<>();
+
+            for (int i = 0; i < 5; i++) {
+                Ingredient ingredient = new Ingredient();
+                ingredient.setQuantity(1.5);
+                ingredient.setMeasure("CUP");
+                ingredient.setIngredient("Chocolate");
+                ingredients.add(ingredient);
+            }
+
+            List<Step> steps = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                Step step = new Step();
+                step.setId(i);
+                step.setDescription("Long Description");
+                step.setShortDescription("Short Description " + (i + 1));
+                step.setThumbnailUrl("");
+                step.setVideoUrl("");
+                steps.add(step);
+            }
+
+            recipe = new Recipe();
+            recipe.setName("Recipe name");
+            recipe.setId(1);
+            recipe.setServings(5);
+            recipe.setIngredients(ingredients);
+            recipe.setSteps(steps);
+
+            Intent intent = new Intent();
+            intent.putExtra(MainActivity.RECIPE, recipe);
+            return intent;
+        }
+
+    };
 
 
 
     private Recipe recipe;
+    private RecipeIdlingResource recipeIdlingResource = null;
 
 
     @Before
     public void setIntent() {
-        List<Ingredient> ingredients = new ArrayList<>();
 
-        for (int i = 0; i < 5; i++) {
-            Ingredient ingredient = new Ingredient();
-            ingredient.setQuantity(1.5);
-            ingredient.setMeasure("CUP");
-            ingredient.setIngredient("Chocolate");
-            ingredients.add(ingredient);
-        }
+        recipeIdlingResource = ruleMasterStepDetailActivity.getActivity().getRecipeIdle();
+        IdlingRegistry.getInstance().register(recipeIdlingResource);
 
-        List<Step> steps = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            Step step = new Step();
-            step.setId(i);
-            step.setDescription("Long Description");
-            step.setShortDescription("Short Description " + (i + 1));
-            step.setThumbnailUrl("");
-            step.setVideoUrl("");
-            steps.add(step);
-        }
 
-        recipe = new Recipe();
-        recipe.setName("Recipe name");
-        recipe.setId(1);
-        recipe.setServings(5);
-        recipe.setIngredients(ingredients);
-        recipe.setSteps(steps);
 
-        Intents.init();
+//        Intents.init();
     }
 
     @Test
     public void checkOpenRecipe() {
-        Intent intent = new Intent();
-        intent.putExtra(MainActivity.RECIPE, recipe);
-        ruleMasterStepDetailActivity.launchActivity(intent);
+
+
+//        ruleMasterStepDetailActivity.launchActivity(intent);
 //        ruleMasterStepDetailActivity.getActivity().getSupportFragmentManager().beginTransaction();
 
         StringBuffer labelIngredient = new StringBuffer("");
@@ -101,16 +118,21 @@ public class ListStepRecipeTest {
         }
         onView(withId(R.id.tv_ingredient)).check(matches(withText(labelIngredient.toString())));
 
-
-        onView(withText(recipe.getSteps().get(0).getShortDescription()))
+        onView(withText(recipe.getSteps().get(1).getShortDescription()))
                 .perform(click());
+
         onView(withId(R.id.tv_step_description))
-                .check(matches(withText(recipe.getSteps().get(0).getDescription())));
+                .check(matches(withText(recipe.getSteps().get(1).getDescription())));
     }
 
     @After
     public void finish() {
-        Intents.release();
+
+        if (recipeIdlingResource != null) {
+            IdlingRegistry.getInstance().unregister(recipeIdlingResource);
+        }
+
+//        Intents.release();
     }
 
     //

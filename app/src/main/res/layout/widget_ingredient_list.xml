@@ -10,21 +10,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:padding="8dp"
         android:textColor="@color/cardview_dark_background"
         android:text="@string/msg_go_recipe" />
 
     <RelativeLayout
         android:id="@+id/layout_recipe"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/text_title_recipe"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_alignParentTop="true"
-            android:textColor="@color/cardview_dark_background"
+            android:gravity="center_vertical"
+            android:background="@color/colorPrimary"
+            android:paddingLeft="16dp"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
             tools:text="Apple pie" />
 
         <ListView
@@ -38,8 +42,10 @@
         <Button
             android:id="@+id/button_go_recipe"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:text="@string/msg_go_recipe" />
     </RelativeLayout>
 

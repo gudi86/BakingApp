@@ -21,6 +21,7 @@ import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
 import br.com.gustavo.bakingapp.listingredientwidget.IngredientWidget;
 import br.com.gustavo.bakingapp.masterrecipe.MasterRecipeActivity;
+import br.com.gustavo.bakingapp.masterrecipe.RecipeIdlingResource;
 
 public class MainActivity extends AppCompatActivity implements RecipeListContract.View, AdapterRecipes.OnClickRecipe {
 
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListContrac
     private RecyclerView recyclerView;
     private ViewGroup layoutError;
 
-    private RecipeListIdlingResource recipeListIdlingResource = null;
+    private RecipeIdlingResource recipeListIdlingResource = null;
 
 
     @Override
@@ -64,13 +65,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListContrac
             recipeListIdlingResource.setIdleNow(false);
 
         presenter.start();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
     }
 
     @Override
@@ -156,9 +150,9 @@ public class MainActivity extends AppCompatActivity implements RecipeListContrac
 
     @VisibleForTesting
     @NonNull
-    public RecipeListIdlingResource getRecipeListIdle() {
+    public RecipeIdlingResource getRecipeListIdle() {
         if (recipeListIdlingResource == null) {
-            recipeListIdlingResource = new RecipeListIdlingResource();
+            recipeListIdlingResource = new RecipeIdlingResource();
         }
         return recipeListIdlingResource;
     }

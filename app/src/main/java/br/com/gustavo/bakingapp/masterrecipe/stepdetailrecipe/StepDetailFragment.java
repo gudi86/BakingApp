@@ -44,6 +44,7 @@ import com.squareup.picasso.Picasso;
 import br.com.gustavo.bakingapp.R;
 import br.com.gustavo.bakingapp.data.model.Step;
 import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
+import br.com.gustavo.bakingapp.masterrecipe.RecipeIdlingResource;
 
 /**
  * Created by gustavomagalhaes on 11/30/17.
@@ -71,7 +72,11 @@ public class StepDetailFragment extends Fragment implements StepDetailContract.I
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        layoutView = inflater.inflate(R.layout.fragment_step_detail, container, false);
+        if (getResources().getBoolean(R.bool.isTablet)) {
+            layoutView = inflater.inflate(R.layout.fragment_step_detail_tablet, container, false);
+        } else {
+            layoutView = inflater.inflate(R.layout.fragment_step_detail, container, false);
+        }
 
         orientationPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
@@ -148,6 +153,7 @@ public class StepDetailFragment extends Fragment implements StepDetailContract.I
     @Override
     public void onResume() {
         super.onResume();
+
         if (Util.SDK_INT <= 23 || player == null) {
             presenter.loadStep(stepRecipe);
         }
@@ -268,5 +274,4 @@ public class StepDetailFragment extends Fragment implements StepDetailContract.I
             player = null;
         }
     }
-
 }
