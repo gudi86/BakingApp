@@ -31,10 +31,14 @@ public class MasterRecipePresenter implements MasterRecipeContract.Presenter {
     }
 
     @Override
-    public void loadStepDetail(Recipe current) {
+    public void loadStepDetail(Recipe current, Step currentStep) {
         this.currentRecipe = current;
         if (view.isTablet()) {
-            view.showStepDetail(currentRecipe.getSteps().get(0));
+            if (currentStep != null) {
+                view.showStepDetail(currentStep);
+            } else {
+                view.showStepDetail(currentRecipe.getSteps().get(0));
+            }
         }
     }
 

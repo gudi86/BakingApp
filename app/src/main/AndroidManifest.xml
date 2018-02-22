@@ -18,9 +18,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".masterrecipe.MasterRecipeActivity" />
-        <activity android:name=".masterrecipe.stepdetailrecipe.StepDetailActivity"
-            android:configChanges="orientation"/>
+        <activity android:name=".masterrecipe.MasterRecipeActivity"
+            android:launchMode="singleTop">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".recipelist.MainActivity"/>
+        </activity>
+        <activity android:name=".masterrecipe.stepdetailrecipe.StepDetailActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".masterrecipe.MasterRecipeActivity"/>
+        </activity>
 
         <provider
             android:name=".data.source.database.BakingContentProvider"

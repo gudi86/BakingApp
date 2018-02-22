@@ -21,7 +21,7 @@ public interface MasterRecipeContract {
     }
 
     interface Presenter extends BasePresenter {
-        void loadStepDetail(Recipe current);
+        void loadStepDetail(Recipe current, Step step);
 
         void openNewStep(Step step);
     }

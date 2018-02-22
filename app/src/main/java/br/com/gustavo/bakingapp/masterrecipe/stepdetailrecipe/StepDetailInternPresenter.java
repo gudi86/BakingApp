@@ -38,7 +38,7 @@ public class StepDetailInternPresenter implements StepDetailContract.Intern.Pres
         } else if(!step.getThumbnailUrl().equals("")) {
             Uri uriMedia = Uri.parse(step.getThumbnailUrl());
             if (uriMedia.getLastPathSegment().endsWith("mp4")) {
-                view.showVideoBy(Uri.parse(step.getThumbnailUrl()));
+                view.showMissingMedia();
             } else {
                 view.showImageBy(Uri.parse(step.getThumbnailUrl()));
             }

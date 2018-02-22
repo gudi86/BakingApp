@@ -2,6 +2,7 @@ package br.com.gustavo.bakingapp.masterrecipe.recipesteplist;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,11 +30,12 @@ public class RecipeStepListFragment extends Fragment implements AdapterStepDetai
     private RecipeStepContract.Presenter presenter;
     private RecyclerView lstRecipeStep;
 
+    private Parcelable listState = null;
+    private Recipe recipe;
 
     public interface OnSelectedStep {
-        public void onClickSelectedStep(Step step);
+        void onClickSelectedStep(Step step);
     }
-//    private RecyclerView rvStepDetails;
 
     private OnSelectedStep onCallbackSelectStep = null;
 
@@ -52,6 +54,17 @@ public class RecipeStepListFragment extends Fragment implements AdapterStepDetai
         }
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            if ( savedInstanceState.containsKey("list") )
+                listState = savedInstanceState.getParcelable("list");
+            if (savedInstanceState.containsKey("recipe"))
+                recipe = savedInstanceState.getParcelable("recipe");
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -65,10 +78,17 @@ public class RecipeStepListFragment extends Fragment implements AdapterStepDetai
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("recipe", recipe);
+        outState.putParcelable("list", lstRecipeStep.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-
-        Recipe recipe = getActivity().getIntent().getParcelableExtra(MainActivity.RECIPE);
+        if (getActivity().getIntent().hasExtra(MainActivity.RECIPE))
+            recipe = getActivity().getIntent().getParcelableExtra(MainActivity.RECIPE);
         presenter.loadRecipe(recipe);
     }
 
@@ -86,6 +106,7 @@ public class RecipeStepListFragment extends Fragment implements AdapterStepDetai
     @Override
     public void showListInstructions(List<Step> steps, List<Ingredient> ingredients) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.onRestoreInstanceState(listState);
         lstRecipeStep.setLayoutManager(layoutManager);
         lstRecipeStep.setAdapter(new AdapterStepDetail(ingredients, steps, this));
     }

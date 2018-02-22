@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +29,14 @@ import br.com.gustavo.bakingapp.masterrecipe.stepdetailrecipe.StepDetailFragment
 
 public class MasterRecipeActivity extends AppCompatActivity implements RecipeStepListFragment.OnSelectedStep, MasterRecipeContract.View {
 
+    private static final String LOG_TAG = MasterRecipeActivity.class.getName();
+
     public static final  String STEP_RECIPE = "STEP_RECIPE";
     public static final String IDX_STEP = "IDX_STEP";
 
     private MasterRecipeContract.Presenter presenter;
+
+    private Step currentStep = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,8 +44,8 @@ public class MasterRecipeActivity extends AppCompatActivity implements RecipeSte
 
         setContentView(R.layout.activity_recipe_detail);
 
-        if (getResources().getBoolean(R.bool.isTablet)) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        if (savedInstanceState != null && savedInstanceState.containsKey("step")) {
+            currentStep = savedInstanceState.getParcelable("step");
         }
 
         new MasterRecipePresenter(BakingDataSourceImpl.getInstance(getBaseContext()), this);
@@ -48,7 +53,13 @@ public class MasterRecipeActivity extends AppCompatActivity implements RecipeSte
         RecipeStepListFragment stepRecipeFragment = (RecipeStepListFragment) getSupportFragmentManager().findFragmentById(R.id.list_step_detail);
         new RecipeStepPresenter(BakingDataSourceImpl.getInstance(getBaseContext()), stepRecipeFragment);
 
-        presenter.loadStepDetail((Recipe) getIntent().getParcelableExtra(MainActivity.RECIPE));
+        presenter.loadStepDetail((Recipe) getIntent().getParcelableExtra(MainActivity.RECIPE), currentStep);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("step", currentStep);
     }
 
     @Override
@@ -64,6 +75,7 @@ public class MasterRecipeActivity extends AppCompatActivity implements RecipeSte
     @Override
     public void showStepDetail(Step step) {
         StepDetailFragment stepDetailFragment = new StepDetailFragment();
+        currentStep = step;
         stepDetailFragment.setStep(step);
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container_step_detail, stepDetailFragment).commitNow();
     }

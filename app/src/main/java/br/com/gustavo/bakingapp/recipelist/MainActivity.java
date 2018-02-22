@@ -42,10 +42,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListContrac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (getResources().getBoolean(R.bool.isTablet)) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-
         new RecipeListPresenter(BakingDataSourceImpl.getInstance(getBaseContext()), this);
 
         recyclerView = findViewById(R.id.rv_recipes);

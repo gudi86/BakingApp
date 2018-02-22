@@ -37,6 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight=".5"
+        android:padding="16dp"
+        android:textSize="16sp"
         tools:text="8. Pour the batter into the cooled cookie crust. Bang the pan on a counter or sturdy table a few times to release air bubbles from the batter."/>
 
 </LinearLayout>
