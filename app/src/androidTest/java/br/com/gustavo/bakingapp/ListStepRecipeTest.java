@@ -92,7 +92,7 @@ public class ListStepRecipeTest {
     public void setIntent() {
 
 //        recipeIdlingResource = ruleMasterStepDetailActivity.getActivity().getRecipeIdle();
-        IdlingRegistry.getInstance().register(recipeIdlingResource);
+//        IdlingRegistry.getInstance().register(recipeIdlingResource);
 
 
 

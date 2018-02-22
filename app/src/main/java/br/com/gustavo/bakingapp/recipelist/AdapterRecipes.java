@@ -1,6 +1,7 @@
 package br.com.gustavo.bakingapp.recipelist;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.RecipeVi
 
         holder.tvName.setText(recipe.getName());
 
-        if (recipe.getImage() != null && !recipe.getImage().equals("")) {
+        if (!TextUtils.isEmpty(recipe.getImage())) {
             Picasso
                     .with(holder.itemView.getContext())
                     .load(recipe.getImage())
