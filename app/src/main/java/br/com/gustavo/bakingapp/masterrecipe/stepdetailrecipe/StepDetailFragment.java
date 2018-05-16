@@ -28,6 +28,7 @@ import com.squareup.picasso.Picasso;
 import br.com.gustavo.bakingapp.R;
 import br.com.gustavo.bakingapp.data.model.Step;
 import br.com.gustavo.bakingapp.data.source.BakingDataSourceImpl;
+import br.com.gustavo.bakingapp.masterrecipe.RecipeIdlingResource;
 
 /**
  * Created by gustavomagalhaes on 11/30/17.
@@ -47,6 +48,7 @@ public class StepDetailFragment extends Fragment implements StepDetailContract.I
     private long playbackPosition = 0;
     private int currentWindow = 0;
     private ImageButton btnFullScreen;
+    private RecipeIdlingResource idleTest = null;
 
 
     @Nullable
@@ -152,7 +154,7 @@ public class StepDetailFragment extends Fragment implements StepDetailContract.I
 
     @Override
     public void showTextDescription(String description) {
-        TextView tvStepDescription = layoutView.findViewById(R.id.tv_step_description);
+        TextView tvStepDescription = layoutView.findViewById(R.id.tv_step_more_description);
         if (tvStepDescription != null) {
             tvStepDescription.setText(description);
         }
@@ -183,6 +185,9 @@ public class StepDetailFragment extends Fragment implements StepDetailContract.I
 
             player.seekTo(currentWindow, playbackPosition);
         }
+
+        if (idleTest != null)
+            idleTest.setIdleNow(true);
     }
 
     @Override
@@ -193,16 +198,18 @@ public class StepDetailFragment extends Fragment implements StepDetailContract.I
             .with(getContext())
             .load(imageUri)
             .into(imageStep);
+
+        if (idleTest != null)
+            idleTest.setIdleNow(true);
     }
 
     @Override
     public void showMissingMedia() {
         playerView.setVisibility(View.GONE);
         imageStep.setVisibility(View.VISIBLE);
-    }
 
-    public void setStep(Step step) {
-        this.stepRecipe = step;
+        if (idleTest != null)
+            idleTest.setIdleNow(true);
     }
 
     private void releasePlayer() {
@@ -211,5 +218,13 @@ public class StepDetailFragment extends Fragment implements StepDetailContract.I
             player.release();
             player = null;
         }
+    }
+
+    public void setStep(Step step) {
+        this.stepRecipe = step;
+    }
+
+    public void setIdleTest(RecipeIdlingResource idleTest) {
+        this.idleTest = idleTest;
     }
 }

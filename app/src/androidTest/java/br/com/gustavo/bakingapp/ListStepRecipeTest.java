@@ -2,16 +2,12 @@ package br.com.gustavo.bakingapp;
 
 import android.content.Intent;
 import android.support.test.espresso.IdlingRegistry;
-import android.support.test.espresso.intent.Intents;
+import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.espresso.ViewInteraction;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.TextView;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,10 +26,13 @@ import br.com.gustavo.bakingapp.recipelist.MainActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.withChild;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 
 /**
  * Created by gustavomagalhaes on 2/4/18.
@@ -45,6 +44,8 @@ public class ListStepRecipeTest {
     @Rule
     public ActivityTestRule<MasterRecipeActivity> ruleMasterStepDetailActivity
             = new ActivityTestRule(MasterRecipeActivity.class) {
+
+
         @Override
         protected Intent getActivityIntent() {
             List<Ingredient> ingredients = new ArrayList<>();
@@ -90,22 +91,14 @@ public class ListStepRecipeTest {
 
     @Before
     public void setIntent() {
-
-//        recipeIdlingResource = ruleMasterStepDetailActivity.getActivity().getRecipeIdle();
-//        IdlingRegistry.getInstance().register(recipeIdlingResource);
-
-
-
 //        Intents.init();
+        recipeIdlingResource = ruleMasterStepDetailActivity.getActivity().getRecipeListIdle();
+        IdlingRegistry.getInstance().register(recipeIdlingResource);
+
     }
 
     @Test
     public void checkOpenRecipe() {
-
-
-//        ruleMasterStepDetailActivity.launchActivity(intent);
-//        ruleMasterStepDetailActivity.getActivity().getSupportFragmentManager().beginTransaction();
-
         StringBuffer labelIngredient = new StringBuffer("");
         for (Ingredient i : recipe.getIngredients()) {
             labelIngredient
@@ -118,11 +111,23 @@ public class ListStepRecipeTest {
         }
         onView(withId(R.id.tv_ingredient)).check(matches(withText(labelIngredient.toString())));
 
-        onView(withText(recipe.getSteps().get(1).getShortDescription()))
-                .perform(click());
+        onView(withId(R.id.list_step_detail)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
-        onView(withId(R.id.tv_step_description))
-                .check(matches(withText(recipe.getSteps().get(1).getDescription())));
+//        onView(withText(recipe.getSteps().get(1).getShortDescription()))
+//                .perform(click());
+
+        if (doesViewExist(R.id.tv_step_more_description)) {
+            onView(withId(R.id.tv_step_more_description)).check(matches(withText(recipe.getSteps().get(1).getDescription())));
+        }
+    }
+
+    public boolean doesViewExist(int id) {
+        try {
+            onView(withId(id)).check(matches(isDisplayed()));
+            return true;
+        } catch (NoMatchingViewException e) {
+            return false;
+        }
     }
 
     @After
@@ -132,37 +137,6 @@ public class ListStepRecipeTest {
             IdlingRegistry.getInstance().unregister(recipeIdlingResource);
         }
 
-//        Intents.release();
     }
 
-    //
-//    private static Matcher<View> withDataAtPosition(final int id, final String data, final int position) {
-//        return new TypeSafeMatcher<View>() {
-//
-//            @Override
-//            public void describeTo(Description description) {
-//                description.appendText("My text");
-////                describeTo(description);
-//            }
-//
-//            @Override
-//            protected boolean matchesSafely(View item) {
-//
-//                if (!(item instanceof RecyclerView)) {
-//                    return false;
-//                }
-//                RecyclerView recyclerView = (RecyclerView) item;
-//
-//                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
-//
-//                TextView view = viewHolder.itemView.findViewById(id);
-//
-//                if (view.getText().equals(data)) {
-//                    return true;
-//                }
-//
-//                return false;
-//            }
-//        };
-//    }
 }

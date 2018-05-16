@@ -2,6 +2,7 @@ package br.com.gustavo.bakingapp;
 
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -23,6 +24,7 @@ import br.com.gustavo.bakingapp.recipelist.MainActivity;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.not;
@@ -61,7 +63,10 @@ public class DescribeStepTest {
         Intent intent = new Intent();
         intent.putParcelableArrayListExtra(MasterRecipeActivity.STEP_RECIPE, (ArrayList<? extends Parcelable>) steps);
         ruleStepDetailActivity.launchActivity(intent);
-        onView(withId(R.id.btn_previous_step)).check(matches(not(isEnabled())));
+
+        if (doesViewExist(R.id.btn_previous_step)) {
+            onView(withId(R.id.btn_previous_step)).check(matches(not(isEnabled())));
+        }
     }
 
     @Test
@@ -70,19 +75,31 @@ public class DescribeStepTest {
         intent.putParcelableArrayListExtra(MasterRecipeActivity.STEP_RECIPE, (ArrayList<? extends Parcelable>) steps);
         ruleStepDetailActivity.launchActivity(intent);
 
-        onView(withId(R.id.btn_next_step))
-                .perform(click())
-                .perform(click())
-                .perform(click())
-                .perform(click())
-                .perform(click());
+        if (doesViewExist(R.id.btn_next_step)) {
 
-        onView(withId(R.id.btn_next_step)).check(matches(not(isEnabled())));
+            onView(withId(R.id.btn_next_step))
+                    .perform(click())
+                    .perform(click())
+                    .perform(click())
+                    .perform(click())
+                    .perform(click());
+
+            onView(withId(R.id.btn_next_step)).check(matches(not(isEnabled())));
+        }
     }
 
     @After
     public void finish() {
         Intents.release();
+    }
+
+    public boolean doesViewExist(int id) {
+        try {
+            onView(withId(id)).check(matches(isDisplayed()));
+            return true;
+        } catch (NoMatchingViewException e) {
+            return false;
+        }
     }
 
 }

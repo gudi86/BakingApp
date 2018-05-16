@@ -1,5 +1,6 @@
 package br.com.gustavo.bakingapp;
 import android.support.annotation.IdRes;
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.PerformException;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
@@ -9,6 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
+
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 /**
  * Created by dannyroa on 5/9/15.
@@ -38,6 +44,7 @@ public class TestUtil {
             this.viewAction = viewAction;
             this.viewId = viewId;
         }
+
 
         public Matcher<View> getConstraints() {
             return Matchers.allOf(new Matcher[] {

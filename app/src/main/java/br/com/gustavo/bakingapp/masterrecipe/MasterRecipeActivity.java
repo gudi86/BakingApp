@@ -1,14 +1,12 @@
 package br.com.gustavo.bakingapp.masterrecipe;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +36,8 @@ public class MasterRecipeActivity extends AppCompatActivity implements RecipeSte
 
     private Step currentStep = null;
 
+    private RecipeIdlingResource recipeIdlingResource = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +48,15 @@ public class MasterRecipeActivity extends AppCompatActivity implements RecipeSte
             currentStep = savedInstanceState.getParcelable("step");
         }
 
+        getRecipeListIdle();
+        if(recipeIdlingResource != null)
+            recipeIdlingResource.setIdleNow(false);
+
         new MasterRecipePresenter(BakingDataSourceImpl.getInstance(getBaseContext()), this);
 
         RecipeStepListFragment stepRecipeFragment = (RecipeStepListFragment) getSupportFragmentManager().findFragmentById(R.id.list_step_detail);
         new RecipeStepPresenter(BakingDataSourceImpl.getInstance(getBaseContext()), stepRecipeFragment);
-
+        stepRecipeFragment.setIdleTest(recipeIdlingResource);
         presenter.loadStepDetail((Recipe) getIntent().getParcelableExtra(MainActivity.RECIPE), currentStep);
     }
 
@@ -74,9 +78,11 @@ public class MasterRecipeActivity extends AppCompatActivity implements RecipeSte
 
     @Override
     public void showStepDetail(Step step) {
+
         StepDetailFragment stepDetailFragment = new StepDetailFragment();
         currentStep = step;
         stepDetailFragment.setStep(step);
+        stepDetailFragment.setIdleTest(recipeIdlingResource);
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container_step_detail, stepDetailFragment).commitNow();
     }
 
@@ -91,6 +97,15 @@ public class MasterRecipeActivity extends AppCompatActivity implements RecipeSte
     @Override
     public boolean isTablet() {
         return getResources().getBoolean(R.bool.isTablet);
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public RecipeIdlingResource getRecipeListIdle() {
+        if (recipeIdlingResource == null) {
+            recipeIdlingResource = new RecipeIdlingResource();
+        }
+        return recipeIdlingResource;
     }
 
 }

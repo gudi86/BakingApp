@@ -18,6 +18,7 @@ import br.com.gustavo.bakingapp.R;
 import br.com.gustavo.bakingapp.data.model.Ingredient;
 import br.com.gustavo.bakingapp.data.model.Recipe;
 import br.com.gustavo.bakingapp.data.model.Step;
+import br.com.gustavo.bakingapp.masterrecipe.RecipeIdlingResource;
 import br.com.gustavo.bakingapp.recipelist.MainActivity;
 
 /**
@@ -33,6 +34,8 @@ public class RecipeStepListFragment extends Fragment implements AdapterStepDetai
     private Parcelable listState = null;
     private Recipe recipe;
 
+    private RecipeIdlingResource recipeIdlingResource = null;
+
     public interface OnSelectedStep {
         void onClickSelectedStep(Step step);
     }
@@ -41,6 +44,10 @@ public class RecipeStepListFragment extends Fragment implements AdapterStepDetai
 
     public RecipeStepListFragment() {
 
+    }
+
+    public void setIdleTest(RecipeIdlingResource idleTest) {
+        this.recipeIdlingResource = idleTest;
     }
 
     @Override
@@ -109,6 +116,9 @@ public class RecipeStepListFragment extends Fragment implements AdapterStepDetai
         layoutManager.onRestoreInstanceState(listState);
         lstRecipeStep.setLayoutManager(layoutManager);
         lstRecipeStep.setAdapter(new AdapterStepDetail(ingredients, steps, this));
+
+        if (recipeIdlingResource != null)
+            recipeIdlingResource.setIdleNow(true);
     }
 
     @Override
